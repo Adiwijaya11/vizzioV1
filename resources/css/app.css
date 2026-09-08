@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import 'lenis/dist/lenis.css';
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+@source '../js/**/*.js';
+
+@theme {
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+    --color-primary: #2563EB;
+    --color-primary-dark: #1D4ED8;
+    --color-primary-deep: #1E3A8A;
+    --color-bg: #F8FAFC;
+    --color-muted: #F1F5F9;
+    --color-border: #E2E8F0;
+    --color-ink: #0F172A;
+    --color-ink-muted: #64748B;
+}
+
+/* Lenis Smooth Scroll Styles */
+html, body {
+    scroll-behavior: auto !important;
+}
+html.lenis, html.lenis body {
+    height: auto;
+}
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+/* Body Scroll Lock for Mobile Nav */
+html.is-open-nav, body.is-open-nav {
+    overflow: hidden !important;
+    overscroll-behavior: contain;
+}
+#mobile-nav aside, #mobile-nav [data-lenis-prevent] {
+    touch-action: pan-y !important;
+}
+
+/* Complete Erasure of All Google Translate Visual Traces */
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-te-spinner-pos,
+.VIpgJd-yDufZb-O2bfZe,
+.VIpgJd-yDufZb-e2F3ed,
+.VIpgJd-yDufZb-Lg26de,
+.VIpgJd-yDufZb-Mtb2mc,
+.VIpgJd-yDufZb-SmV21e,
+.VIpgJd-yDufZb-s2g2ed,
+iframe.skiptranslate,
+iframe[id*="google_translate"],
+.goog-te-gadget-icon,
+.goog-te-gadget-simple {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+body {
+    top: 0px !important;
+    position: static !important;
+}
+
+.goog-tooltip,
+.goog-tooltip:hover,
+#goog-gt-tt * {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+.goog-text-highlight,
+font[style] {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Touch target utility - 44px minimum for accessibility */
+.touch-target {
+    min-height: 44px;
+    min-width: 44px;
+}
+/* Service Card Wave Animations */
+@keyframes service-wave-front {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes service-wave-back {
+    0% {
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.animate-service-wave-front {
+    animation: service-wave-front 14s linear infinite;
+}
+
+.animate-service-wave-back {
+    animation: service-wave-back 20s linear infinite;
+}
+
+.service-wave-rise {
+    transform: translateY(105%);
+    transition: transform 1.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .service-wave-rise,
+.group:focus-within .service-wave-rise {
+    transform: translateY(0);
+}
+
+.service-wave-ink {
+    transition: color 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s,
+                background-color 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s,
+                border-color 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s,
+                transform 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s,
+                box-shadow 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+}
