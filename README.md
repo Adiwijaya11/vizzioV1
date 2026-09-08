@@ -1,58 +1,140 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# VizzioCraft — Modern Company Profile & Digital Agency Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Official GitHub Repository: [Adiwijaya11/vizzioV1](https://github.com/Adiwijaya11/vizzioV1)
 
-## About Laravel
+> **vizzioV1** adalah repositori resmi untuk sistem profil perusahaan dan panel kendali manajemen terintegrasi **VizzioCraft**. Dibangun menggunakan arsitektur modern berbasis **Laravel**, **Tailwind CSS**, **MySQL**, dan **Vite**, platform ini dirancang khusus untuk memadukan pengalaman visual publik yang premium dengan kapabilitas manajemen operasional dan kontrol administratif berskala enterprise.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📌 Tentang Repositori vizzioV1
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Repositori **[Adiwijaya11/vizzioV1](https://github.com/Adiwijaya11/vizzioV1)** mencakup seluruh ekosistem aplikasi VizzioCraft:
+1. **Frontend Publik**: Portal profil perusahaan yang responsif, modern, dan interaktif dengan desain berstandar tinggi (Primary Blue `#2563EB`, font *Poppins*, micro-animations, filter portofolio, katalog layanan interaktif, dan integrasi WhatsApp).
+2. **Panel Kontrol Admin (Role-Based)**: Sistem manajemen operasional mandiri yang dipisahkan secara ketat menjadi dua peran akses:
+   - **Admin Biasa (`role: admin`)**: Mengelola seluruh konten publikasi, analitik traffic, interaksi klien, dan pengaturan tampilan situs.
+   - **Super Admin (`role: super_admin`)**: Memegang kendali penuh atas manajemen pengguna (`All Users`), audit log, keamanan sesi, snapshot backup database MySQL, konfigurasi SMTP, dan variabel sistem.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🚀 Fitur Utama
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Halaman Web Publik
+- **Hero Banner Interaktif**: Headline dinamis, badge layanan, pencarian instan, dan tombol Call-To-Action (CTA).
+- **Layanan Digital**: Katalog 9 paket layanan dengan fitur unggulan dan rincian harga.
+- **Portofolio Proyek**: Showcase proyek aktif dan selesai lengkap dengan filter kategori & teknologi.
+- **Berita & Wawasan**: Artikel terindeks dengan filter kategori, detail baca, dan rekomendasi terkait.
+- **Tentang Kami**: Profil visi-misi perusahaan, metodologi pendekatan, dan struktur pimpinan/tim.
+- **Kontak & CRM**: Form kontak publik terintegrasi langsung ke kotak masuk admin dan widget WhatsApp floating chat.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### 2. Panel Admin Terpadu
 
-## Agentic Development
+#### A. Utama & Analitik
+- **Dashboard Overview (`/admin/dashboard`)**: Metrik KPI real-time (adaptif role), grafik kunjungan 7-hari, portofolio terbaru, dan pesan kontak masuk.
+- **Analitik Pengunjung (`/admin/analytics`)**: Monitoring log IP pengunjung, rujukan traffic, serta distribusi peramban & OS.
+- **Laporan Traffic (`/admin/analytics/traffic`)**: Funnel konversi dari total visitor hingga closing deal penawaran.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+#### B. Manajemen Konten
+- **Berita & Artikel (`/admin/news`)**: Full CRUD artikel berita publikasi.
+- **Portofolio & Proyek (`/admin/projects`)**: Full CRUD proyek dan estimasi anggaran.
+- **Layanan Digital (`/admin/services`)**: Full CRUD katalog layanan dan paket.
+- **Galeri Media (`/admin/gallery`)**: Manajemen aset visual dan perpustakaan media.
+- **Manajemen Tim (`/admin/team`)**: Full CRUD struktur organisasi dan sosial media anggota tim.
+- **Testimonial Klien (`/admin/testimonials`)**: Full CRUD testimoni dan rating kepuasan klien.
 
+#### C. Interaksi & CRM
+- **Pesan Masuk (`/admin/messages`)**: Inbox pesan kontak publik dengan pembaruan status baca.
+- **Permintaan Penawaran (`/admin/leads`)**: CRM pipeline penawaran proyek prospek masuk.
+- **Notifikasi Sistem (`/admin/notifications`)**: Riwayat alert keamanan dan update sistem.
+
+#### D. Pengaturan & Tampilan
+- **Profil Perusahaan (`/admin/settings/profile`)**: Identitas, kontak resmi, alamat kantor, dan media sosial.
+- **Halaman Statis (`/admin/settings/pages`)**: Pengelolaan konten statis (Tentang Kami, Privasi, Syarat Ketentuan, FAQ, Karir).
+- **SEO & Meta Tag (`/admin/settings/seo`)**: Meta tag global dengan live pratinjau Google SERP & Social Card.
+- **Banner & Hero Section (`/admin/settings/banner`)**: Kustomisasi teks hero, CTA, dan live preview.
+
+#### E. Khusus Super Admin
+- **All Users Management (`/admin/users`)**: Full CRUD akun administrator, penetapan peran (Super Admin vs Admin), dan reset password.
+- **Audit Log Aktivitas (`/admin/logs`)**: Histori komprehensif seluruh aktivitas admin.
+- **Keamanan & Sesi (`/admin/security`)**: Audit sesi login aktif dan pemantauan keamanan.
+- **Backup & Restore DB (`/admin/backup`)**: Snapshot mandiri tabel-tabel MySQL secara real-time.
+- **Konfigurasi Email SMTP (`/admin/settings/email`)** & **Konfigurasi Sistem .env (`/admin/settings/system`)**.
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+
+- **Backend**: [Laravel 11 / 12](https://laravel.com) (PHP 8.2+)
+- **Frontend Styling**: [Tailwind CSS](https://tailwindcss.com), Vanilla CSS, Google Fonts (*Poppins*)
+- **Build Tool**: [Vite](https://vitejs.dev)
+- **Database**: MySQL / MariaDB (via Laragon / Local Server)
+- **Icons & Visuals**: Heroicons (SVG), Custom Vector Illustrations
+
+---
+
+## 📦 Panduan Instalasi & Menjalankan Lokal
+
+### 1. Klon Repositori
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/Adiwijaya11/vizzioV1.git
+cd vizzioV1
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Instal Dependensi
+```bash
+# Dependensi PHP
+composer install
 
-## Contributing
+# Dependensi Frontend Node.js
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Konfigurasi Lingkungan (.env)
+Salin file konfigurasi dan sesuaikan pengaturan database:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Code of Conduct
+Pastikan konfigurasi database di `.env` sudah sesuai (contoh konfigurasi MySQL Laragon):
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=vizziocraft2
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Migrasi Database & Seeder
+Jalankan migrasi tabel beserta sample data lengkap:
+```bash
+php artisan migrate --seed
+```
 
-## Security Vulnerabilities
+### 5. Jalankan Server Pengembangan
+Buka dua terminal terpisah:
+```bash
+# Terminal 1: Backend PHP
+php artisan serve
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Terminal 2: Vite Dev Server
+npm run dev
+```
 
-## License
+Aplikasi siap diakses di: `http://127.0.0.1:8000`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🔐 Kredensial Akun Pengujian (Demo)
+
+| Peran (Role) | Email | Kata Sandi | Lingkup Akses |
+|---|---|---|---|
+| **Admin Biasa** | `admin@vizziocraft.com` | `admin123` | Seluruh Modul Konten, CRM, Analitik, & Pengaturan Tampilan |
+| **Super Admin** | `superadmin@vizziocraft.com` | `superadmin123` | Akses Penuh: All Users, Backup MySQL, Audit Log, SMTP, & .env |
+
+---
+
+## 📄 Lisensi
+
+Repositori ini dilisensikan di bawah lisensi terbuka [MIT License](LICENSE).
+Dikembangkan untuk ekosistem **VizzioCraft** &copy; 2026.
