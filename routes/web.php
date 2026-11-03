@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\SecurityController;
 use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -139,6 +141,9 @@ Route::get('/news', function (Request $request) use ($getNewsCategoryData) {
     $selectedCategory = 'all';
     if ($categoryParam && isset($categoryAliases[strtolower($categoryParam)])) {
         $selectedCategory = $categoryAliases[strtolower($categoryParam)];
+        if ($selectedCategory === 'event') {
+            return redirect('/events');
+        }
     }
 
     [$categoryDetails, $categoryDetail] = $getNewsCategoryData($selectedCategory);
@@ -171,6 +176,9 @@ Route::get('/news/category/{category}', function ($category) use ($getNewsCatego
     $selectedCategory = $categoryAliases[$slugLower];
     if ($selectedCategory === 'all') {
         return redirect('/news');
+    }
+    if ($selectedCategory === 'event') {
+        return redirect('/events');
     }
 
     [$categoryDetails, $categoryDetail] = $getNewsCategoryData($selectedCategory);
@@ -254,6 +262,10 @@ Route::get('/services', function () {
     return view('services');
 });
 
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -328,6 +340,7 @@ Route::middleware([])->group(function () {
 
     // 2. Manajemen Konten CRUD
     Route::resource('admin/news', NewsController::class)->names('admin.news');
+    Route::resource('admin/events', AdminEventController::class)->names('admin.events');
     Route::resource('admin/projects', ProjectController::class)->names('admin.projects');
     Route::resource('admin/services', ServiceController::class)->names('admin.services');
     Route::get('/admin/gallery', [GalleryController::class, 'index'])->name('admin.gallery.index');

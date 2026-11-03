@@ -25,7 +25,7 @@
 
 @section('content')
     {{-- Hero Section --}}
-    <section data-hero-section class="relative w-full min-h-[calc(100svh-56px)] lg:h-[calc(100svh-56px)] flex items-center overflow-hidden">
+    <section data-hero-section class="relative w-full h-[calc(100svh-4rem)] min-h-[calc(100svh-4rem)] flex items-center overflow-hidden">
         {{-- Dark background gradient --}}
         <div class="absolute inset-0 bg-gradient-to-br from-primary-deep via-primary to-[#1E40AF]" aria-hidden="true"></div>
         
@@ -139,45 +139,45 @@
         </div>
 
         {{-- Main Container --}}
-        <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
+        <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8">
             <div id="hero-text" style="opacity: 0; transform: translateX(-90px);" class="w-full">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-8 sm:gap-10 lg:gap-14">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-8 lg:gap-12 xl:gap-14">
                     
                     {{-- Left Column: Text Content --}}
-                    <div class="flex-1 min-w-0 text-left">
+                    <div class="w-full flex-1 min-w-0 text-left">
                         {{-- Badge (Clean White Pill) --}}
-                        <div class="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-1.5 text-xs font-bold text-primary-deep shadow-md mb-5 lg:mb-6 backdrop-blur-sm">
-                            <span class="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+                        <div class="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-white/95 px-3 py-1 sm:px-4 sm:py-1.5 text-[11px] sm:text-xs font-bold text-primary-deep shadow-md mb-2 sm:mb-3.5 lg:mb-5 backdrop-blur-sm">
+                            <span class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-primary animate-pulse"></span>
                             Digital Solutions Partner
                         </div>
 
                         {{-- Main Heading --}}
-                        <h1 id="hero-heading" class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white leading-[1.15] mb-4 lg:mb-5">
+                        <h1 id="hero-heading" class="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white leading-[1.18] mb-2 sm:mb-3 lg:mb-4">
                             <span data-lang-id>Bergerak<br><span class="text-sky-300">Memberi Solusi.</span></span>
                             <span data-lang-en class="hidden">Moving Forward,<br><span class="text-sky-300">Providing Solutions.</span></span>
                         </h1>
 
                         {{-- Subheading --}}
-                        <p class="text-sm sm:text-base lg:text-lg text-blue-50/90 leading-relaxed mb-7 lg:mb-8 font-normal">
+                        <p class="text-xs sm:text-base lg:text-lg text-blue-50/90 leading-relaxed mb-3 sm:mb-5 lg:mb-7 font-normal">
                             <span data-lang-id>Kami hadir sebagai mitra digital terpercaya untuk membangun software, platform LMS, website modern, serta infrastruktur IT yang efisien dan terintegrasi.</span>
                             <span data-lang-en class="hidden">We are here as a trusted digital partner to build custom software, LMS platforms, modern websites, and integrated, efficient IT infrastructure.</span>
                         </p>
 
                         {{-- Action Buttons --}}
-                        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-3 w-full">
+                        <div class="flex flex-row items-center gap-2 sm:gap-3 w-full">
                             <a
                                 href="/#contact"
-                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-primary shadow-sm hover:bg-blue-50 hover:scale-[1.02] hover:shadow-[0_12px_24px_rgba(255,255,255,0.2)] transition-all duration-300 w-full sm:w-auto touch-target select-none"
+                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-white px-3.5 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm font-bold text-primary shadow-sm hover:bg-blue-50 hover:scale-[1.02] hover:shadow-[0_12px_24px_rgba(255,255,255,0.2)] transition-all duration-300 touch-target select-none whitespace-nowrap"
                             >
                                 <span data-lang-id>Mulai Project</span>
                                 <span data-lang-en class="hidden">Start Project</span>
-                                <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                             </a>
                             <a
                                 href="/services"
-                                class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-xs hover:bg-white/25 hover:border-white/50 hover:scale-[1.02] transition-all duration-300 w-full sm:w-auto touch-target select-none"
+                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl border border-white/30 bg-white/10 px-3.5 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm font-semibold text-white backdrop-blur-xs hover:bg-white/25 hover:border-white/50 hover:scale-[1.02] transition-all duration-300 touch-target select-none whitespace-nowrap"
                             >
                                 <span data-lang-id>Jelajahi Layanan</span>
                                 <span data-lang-en class="hidden">Explore Services</span>
@@ -187,18 +187,18 @@
 
 
                     {{-- Right Column: Premium Glassmorphism Card --}}
-                    <div class="w-full sm:w-[360px] lg:w-[430px] shrink-0 relative z-30">
-                        <div class="relative rounded-3xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-2xl p-6">
+                    <div class="w-full sm:w-[380px] lg:w-[430px] shrink-0 relative z-30">
+                        <div class="relative rounded-2xl sm:rounded-3xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-2xl p-3.5 sm:p-5 lg:p-6">
                             
                             {{-- Card inner glow decoration --}}
-                            <div class="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none" aria-hidden="true">
+                            <div class="absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden pointer-events-none" aria-hidden="true">
                                 <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-sky-400/15 blur-2xl"></div>
                                 <div class="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-primary/20 blur-2xl"></div>
                             </div>
 
                             {{-- Card Header --}}
-                            <div class="relative mb-4">
-                                <h2 class="text-white font-bold text-base leading-snug">
+                            <div class="relative mb-2 sm:mb-3.5">
+                                <h2 class="text-white font-bold text-xs sm:text-base leading-snug">
                                     <span data-lang-id>Apa yang Anda butuhkan?</span>
                                     <span data-lang-en class="hidden">What do you need?</span>
                                 </h2>
@@ -208,8 +208,8 @@
                             <div id="hero-search-wrapper" class="relative z-50">
                                 <div class="flex items-center gap-2">
                                     <div class="relative flex-1">
-                                        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <div class="absolute left-2.5 sm:left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none">
+                                            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                             </svg>
                                         </div>
@@ -217,14 +217,14 @@
                                             type="text" 
                                             id="hero-search-input" 
                                             placeholder="Cari layanan..."
-                                            class="w-full bg-white/10 text-white placeholder-blue-100/50 pl-10 pr-4 py-2.5 rounded-xl border border-white/20 focus:border-white/50 focus:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/10 transition-all duration-200 text-sm font-medium"
+                                            class="w-full bg-white/10 text-white placeholder-blue-100/50 pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 rounded-xl border border-white/20 focus:border-white/50 focus:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/10 transition-all duration-200 text-xs sm:text-sm font-medium"
                                             autocomplete="off"
                                         >
                                     </div>
                                     <button 
                                         id="hero-search-btn"
                                         type="button"
-                                        class="inline-flex items-center gap-1.5 bg-white text-primary font-bold text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50 hover:scale-105 hover:shadow-[0_8px_20px_rgba(255,255,255,0.25)] transition-all duration-200 select-none shrink-0"
+                                        class="inline-flex items-center gap-1 sm:gap-1.5 bg-white text-primary font-bold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl hover:bg-blue-50 hover:scale-105 hover:shadow-[0_8px_20px_rgba(255,255,255,0.25)] transition-all duration-200 select-none shrink-0"
                                     >
                                         <span data-lang-id>Cari</span>
                                         <span data-lang-en class="hidden">Search</span>
@@ -235,8 +235,8 @@
                                 </div>
 
                                 {{-- Recommendation Popover (Shown On Focus/Click/Type) --}}
-                                <div id="hero-search-recommendations" class="hidden absolute top-full left-0 right-0 z-50 mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl p-2.5 transform transition-all duration-200 origin-top">
-                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2.5 py-1">
+                                <div id="hero-search-recommendations" class="hidden absolute top-full left-0 right-0 z-50 mt-1.5 sm:mt-2 bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-2xl p-2 sm:p-2.5 transform transition-all duration-200 origin-top max-h-48 sm:max-h-60 overflow-y-auto">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2 sm:px-2.5 py-1">
                                         <span data-lang-id>Rekomendasi Layanan</span>
                                         <span data-lang-en class="hidden">Recommended Services</span>
                                     </div>

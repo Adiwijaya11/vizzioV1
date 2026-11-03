@@ -35,7 +35,7 @@
             'all'      => ['dot' => 'bg-primary',    'id' => 'Semua Berita',   'en' => 'All News',       'href' => '/news',                     'icon' => 'grid'],
             'company'  => ['dot' => 'bg-indigo-500',  'id' => 'Perusahaan',     'en' => 'Company',        'href' => '/news/category/perusahaan', 'icon' => 'building'],
             'project'  => ['dot' => 'bg-emerald-500', 'id' => 'Proyek',         'en' => 'Projects',       'href' => '/news/category/proyek',     'icon' => 'folder'],
-            'event'    => ['dot' => 'bg-purple-500',  'id' => 'Event',          'en' => 'Events',         'href' => '/news/category/event',      'icon' => 'calendar'],
+            'event'    => ['dot' => 'bg-purple-500',  'id' => 'Event',          'en' => 'Events',         'href' => '/events',                   'icon' => 'calendar'],
             'tech'     => ['dot' => 'bg-sky-500',     'id' => 'Teknologi',      'en' => 'Technology',     'href' => '/news/category/teknologi',  'icon' => 'cpu'],
             'tips'     => ['dot' => 'bg-amber-500',   'id' => 'Tips & Panduan', 'en' => 'Tips & Guides',  'href' => '/news/category/tips',       'icon' => 'lightbulb'],
             'industry' => ['dot' => 'bg-cyan-600',    'id' => 'Industri',       'en' => 'Industry',       'href' => '/news/category/industri',  'icon' => 'briefcase'],

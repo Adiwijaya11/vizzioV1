@@ -165,49 +165,172 @@
         </div>
     </div>
 
-    {{-- Traffic Trend Chart & Visitor Summary --}}
-    <div style="background: #ffffff; border: 1px solid #e8edf5; border-radius: 20px; padding: 24px 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px;">
+    {{-- Modern Interactive Dual-Chart Grid (Role-Adaptive & Never Gepeng) --}}
+    <style>
+        .dashboard-charts-grid {
+            display: grid;
+            grid-template-columns: 1.65fr 1fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+        @media (max-width: 1080px) {
+            .dashboard-charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .apexcharts-tooltip {
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15) !important;
+            border-radius: 12px !important;
+            border: 1px solid #e2e8f0 !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+    </style>
+
+    <div class="dashboard-charts-grid">
+        
+        {{-- Chart 1: Tren Trafik Pengunjung Website (ApexCharts Area Spline Modern) --}}
+        <div style="background: #ffffff; border: 1px solid #e8edf5; border-radius: 20px; padding: 24px; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04); display: flex; flex-direction: column; justify-content: space-between;">
             <div>
-                <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0 0 4px 0;">Tren Kunjungan Website (7 Hari Terakhir)</h2>
-                <p style="font-size: 12px; color: #64748b; margin: 0;">Data riil dari tabel log visitor web VizzioCraft.</p>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 6px 14px; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 11px; font-weight: 600; color: #1e40af;">Hari ini:</span>
-                    <span style="font-size: 13px; font-weight: 800; color: #2563eb;">{{ number_format($visitorToday) }} Kunjungan</span>
+                {{-- Header Chart --}}
+                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <h2 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Tren Kunjungan Website</h2>
+                            <span style="font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px; background: {{ $trendIsUp ? '#ecfdf5' : '#fef2f2' }}; color: {{ $trendIsUp ? '#059669' : '#dc2626' }}; display: inline-flex; align-items: center; gap: 4px;">
+                                {!! $trendIsUp ? '&#8593;' : '&#8595;' !!} {{ abs($trendPercentage) }}%
+                                <span style="font-size: 10px; font-weight: 500; color: #64748b;">vs minggu lalu</span>
+                            </span>
+                        </div>
+                        <p style="font-size: 12px; color: #64748b; margin: 0;">Statistik riil audiens dan traffic harian pengguna VizzioCraft.</p>
+                    </div>
+
+                    {{-- Controls: Periode Toggle + Detail Link --}}
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <div style="background: #f1f5f9; padding: 3px; border-radius: 10px; display: inline-flex; gap: 3px;">
+                            <button id="btn-traffic-7" type="button" style="border: none; background: #2563eb; color: #ffffff; font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                7 Hari
+                            </button>
+                            <button id="btn-traffic-14" type="button" style="border: none; background: transparent; color: #64748b; font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                14 Hari
+                            </button>
+                        </div>
+                        <a href="{{ route('admin.analytics.visitors') }}" style="font-size: 12px; font-weight: 700; color: #2563eb; text-decoration: none; padding: 6px 12px; border-radius: 8px; background: #eff6ff; border: 1px solid #bfdbfe; transition: all 0.15s;">
+                            Detail &rarr;
+                        </a>
+                    </div>
                 </div>
-                <a href="{{ route('admin.analytics.visitors') }}" style="font-size: 12px; font-weight: 700; color: #2563eb; text-decoration: none; padding: 6px 12px; border-radius: 8px; background: #f8fafc;">
-                    Detail Analitik &rarr;
-                </a>
+
+                {{-- Key Stats Bar --}}
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; background: #f8fafc; border: 1px solid #eef2f6; border-radius: 14px; padding: 12px 16px;">
+                    <div>
+                        <div style="font-size: 10.5px; font-weight: 600; color: #64748b; text-transform: uppercase;">Hari Ini</div>
+                        <div style="font-size: 18px; font-weight: 800; color: #2563eb;">{{ number_format($visitorToday) }}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10.5px; font-weight: 600; color: #64748b; text-transform: uppercase;">Total Periode</div>
+                        <div id="traffic-total-display" style="font-size: 18px; font-weight: 800; color: #0f172a;">{{ number_format($totalVisits7) }}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10.5px; font-weight: 600; color: #64748b; text-transform: uppercase;">Rata-rata / Hari</div>
+                        <div style="font-size: 18px; font-weight: 800; color: #0f172a;">{{ number_format($avgVisits7) }}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10.5px; font-weight: 600; color: #64748b; text-transform: uppercase;">Puncak Trafik</div>
+                        <div style="font-size: 18px; font-weight: 800; color: #059669;">{{ number_format($peakVisits7) }}</div>
+                    </div>
+                </div>
+
+                {{-- Chart Container (Never Gepeng) --}}
+                <div id="chart-traffic-main" style="width: 100%; min-height: 310px;"></div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 14px; margin-top: 8px;">
+                <span>Puncak trafik tercatat pada <strong>{{ $peakDay7 }}</strong></span>
+                <span style="display: inline-flex; align-items: center; gap: 5px; color: #10b981; font-weight: 600;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981;"></span> Auto-sync Log Visitor
+                </span>
             </div>
         </div>
 
-        <div style="width: 100%; height: 180px; position: relative;">
-            <svg viewBox="0 0 {{ $w }} {{ $h }}" preserveAspectRatio="none" style="width: 100%; height: 100%; overflow: visible;">
-                <defs>
-                    <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.25" />
-                        <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0" />
-                    </linearGradient>
-                </defs>
-                {{-- Grid lines --}}
-                <line x1="{{ $padX }}" y1="{{ $padY }}" x2="{{ $w - $padX }}" y2="{{ $padY }}" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3" />
-                <line x1="{{ $padX }}" y1="{{ ($h - $padY * 2) / 2 + $padY }}" x2="{{ $w - $padX }}" y2="{{ ($h - $padY * 2) / 2 + $padY }}" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3" />
-                <line x1="{{ $padX }}" y1="{{ $h - $padY }}" x2="{{ $w - $padX }}" y2="{{ $h - $padY }}" stroke="#e2e8f0" stroke-width="1" />
+        {{-- Chart 2: Role-Adaptive Chart (Super Admin vs Admin) --}}
+        <div style="background: #ffffff; border: 1px solid #e8edf5; border-radius: 20px; padding: 24px; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                @if(session('user_role') === 'super_admin')
+                    {{-- Super Admin: Audit Trail & Keamanan Sistem --}}
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #7c3aed;"></span>
+                                <h2 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Audit & Keamanan Sistem</h2>
+                            </div>
+                            <p style="font-size: 12px; color: #64748b; margin: 4px 0 0 0;">Distribusi aktivitas operasional & log terpusat.</p>
+                        </div>
+                        <span style="font-size: 11px; font-weight: 700; background: #ede9fe; color: #7c3aed; padding: 4px 10px; border-radius: 8px;">
+                            Super Admin View
+                        </span>
+                    </div>
 
-                {{-- Area & Line --}}
-                <polygon points="{{ $traffic['area'] }}" fill="url(#chartGrad)" />
-                <polyline points="{{ $traffic['line'] }}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    {{-- Donut Chart Container --}}
+                    <div id="chart-role-superadmin" style="width: 100%; min-height: 290px;"></div>
 
-                {{-- Data Points --}}
-                @foreach($traffic['points'] as $idx => $pt)
-                    <circle cx="{{ $pt[0] }}" cy="{{ $pt[1] }}" r="4" fill="#ffffff" stroke="#2563eb" stroke-width="2.5" />
-                    <text x="{{ $pt[0] }}" y="{{ $h - 5 }}" font-size="10" font-family="'Poppins', sans-serif" font-weight="600" fill="#94a3b8" text-anchor="middle">{{ $days[$idx] ?? '' }}</text>
-                    <text x="{{ $pt[0] }}" y="{{ $pt[1] - 8 }}" font-size="10" font-family="'Poppins', sans-serif" font-weight="700" fill="#1e3a8a" text-anchor="middle">{{ $traffic['values'][$idx] ?? 0 }}</text>
-                @endforeach
-            </svg>
+                    {{-- Key Insights --}}
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #f8fafc; border-radius: 10px; font-size: 12px;">
+                            <span style="color: #64748b; font-weight: 600;">Total Akun Pengguna</span>
+                            <span style="font-weight: 700; color: #0f172a;">{{ $userCount }} Akun ({{ $superAdminCount }} SA / {{ $adminRoleCount }} Admin)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #f8fafc; border-radius: 10px; font-size: 12px;">
+                            <span style="color: #64748b; font-weight: 600;">Integritas Audit Trail</span>
+                            <span style="font-weight: 700; color: #059669;">Terekam & Terenkripsi</span>
+                        </div>
+                    </div>
+                @else
+                    {{-- Admin: Leads Funnel & Project Pipeline --}}
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2563eb;"></span>
+                                <h2 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Pipeline Leads & Konversi</h2>
+                            </div>
+                            <p style="font-size: 12px; color: #64748b; margin: 4px 0 0 0;">Tahapan prospek klien baru hingga closing proyek.</p>
+                        </div>
+                        <span style="font-size: 11px; font-weight: 700; background: #eff6ff; color: #2563eb; padding: 4px 10px; border-radius: 8px;">
+                            Win Rate: {{ $adminChartData['winRate'] }}%
+                        </span>
+                    </div>
+
+                    {{-- Donut Chart Container --}}
+                    <div id="chart-role-admin" style="width: 100%; min-height: 290px;"></div>
+
+                    {{-- Key Insights --}}
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #f8fafc; border-radius: 10px; font-size: 12px;">
+                            <span style="color: #64748b; font-weight: 600;">Kesepakatan Berhasil (Won)</span>
+                            <span style="font-weight: 700; color: #059669;">{{ $adminChartData['wonCount'] }} Klien Berhasil</span>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #f8fafc; border-radius: 10px; font-size: 12px;">
+                            <span style="color: #64748b; font-weight: 600;">Proyek Aktif Berjalan</span>
+                            <span style="font-weight: 700; color: #2563eb;">{{ $adminChartData['projectsActive'] }} Proyek Aktif</span>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <div style="border-top: 1px solid #f1f5f9; padding-top: 14px; margin-top: 14px;">
+                @if(session('user_role') === 'super_admin')
+                    <a href="{{ route('admin.logs.index') }}" style="display: flex; align-items: center; justify-content: space-between; text-decoration: none; font-size: 12px; font-weight: 700; color: #7c3aed;">
+                        <span>Buka Riwayat Lengkap Audit Log</span>
+                        <span>&rarr;</span>
+                    </a>
+                @else
+                    <a href="{{ route('admin.leads.index') }}" style="display: flex; align-items: center; justify-content: space-between; text-decoration: none; font-size: 12px; font-weight: 700; color: #2563eb;">
+                        <span>Kelola Seluruh Pipeline Leads</span>
+                        <span>&rarr;</span>
+                    </a>
+                @endif
+            </div>
         </div>
+
     </div>
 
     {{-- Dedicated Modules Quick Navigation Grid (Role-Filtered) --}}
@@ -523,3 +646,331 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function initDashboardCharts() {
+        if (typeof ApexCharts === 'undefined') {
+            setTimeout(initDashboardCharts, 100);
+            return;
+        }
+
+        // ==========================================
+        // 1. CHART UTAMA: TREN KUNJUNGAN WEBSITE
+        // ==========================================
+        const dates7 = @json($dates7);
+        const categories7 = @json($categories7);
+        const values7 = @json($values7);
+
+        const dates14 = @json($dates14);
+        const categories14 = @json($categories14);
+        const values14 = @json($values14);
+
+        const trafficChartOptions = {
+            series: [{
+                name: 'Pengunjung Web',
+                data: values7
+            }],
+            chart: {
+                type: 'area',
+                height: 310,
+                fontFamily: "'Poppins', sans-serif",
+                toolbar: { show: false },
+                zoom: { enabled: false },
+                dropShadow: {
+                    enabled: true,
+                    top: 6,
+                    left: 0,
+                    blur: 8,
+                    color: '#2563eb',
+                    opacity: 0.18
+                },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    dynamicAnimation: { enabled: true, speed: 350 }
+                }
+            },
+            colors: ['#2563eb'],
+            dataLabels: { enabled: false },
+            stroke: {
+                curve: 'smooth',
+                width: 3.5
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    type: 'vertical',
+                    shadeIntensity: 0.5,
+                    gradientToColors: ['#3b82f6'],
+                    inverseColors: false,
+                    opacityFrom: 0.55,
+                    opacityTo: 0.03,
+                    stops: [0, 90, 100]
+                }
+            },
+            markers: {
+                size: 5,
+                colors: ['#ffffff'],
+                strokeColors: '#2563eb',
+                strokeWidth: 3,
+                hover: {
+                    size: 8,
+                    sizeOffset: 3
+                }
+            },
+            grid: {
+                borderColor: '#f1f5f9',
+                strokeDashArray: 4,
+                xaxis: { lines: { show: false } },
+                yaxis: { lines: { show: true } },
+                padding: { top: 10, right: 10, bottom: 0, left: 10 }
+            },
+            xaxis: {
+                categories: categories7,
+                labels: {
+                    style: {
+                        colors: '#94a3b8',
+                        fontSize: '11px',
+                        fontWeight: 600
+                    }
+                },
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#94a3b8',
+                        fontSize: '11px',
+                        fontWeight: 600
+                    },
+                    formatter: function(val) {
+                        return Math.round(val);
+                    }
+                }
+            },
+            tooltip: {
+                theme: 'light',
+                x: { show: true },
+                y: {
+                    formatter: function(val) {
+                        return val + ' Pengunjung';
+                    }
+                },
+                marker: { show: true },
+                style: { fontSize: '12px' }
+            }
+        };
+
+        const trafficChartEl = document.querySelector("#chart-traffic-main");
+        if (trafficChartEl) {
+            const trafficChart = new ApexCharts(trafficChartEl, trafficChartOptions);
+            trafficChart.render();
+
+            // Toggle Filter 7 Hari vs 14 Hari
+            const btn7 = document.getElementById('btn-traffic-7');
+            const btn14 = document.getElementById('btn-traffic-14');
+            const totalDisplay = document.getElementById('traffic-total-display');
+
+            if (btn7 && btn14) {
+                btn7.addEventListener('click', function() {
+                    btn7.style.background = '#2563eb';
+                    btn7.style.color = '#ffffff';
+                    btn14.style.background = 'transparent';
+                    btn14.style.color = '#64748b';
+                    if (totalDisplay) totalDisplay.innerText = '{{ number_format($totalVisits7) }}';
+
+                    trafficChart.updateOptions({
+                        xaxis: { categories: categories7 }
+                    });
+                    trafficChart.updateSeries([{
+                        name: 'Pengunjung Web',
+                        data: values7
+                    }]);
+                });
+
+                btn14.addEventListener('click', function() {
+                    btn14.style.background = '#2563eb';
+                    btn14.style.color = '#ffffff';
+                    btn7.style.background = 'transparent';
+                    btn7.style.color = '#64748b';
+                    if (totalDisplay) totalDisplay.innerText = '{{ number_format($totalVisits14) }}';
+
+                    trafficChart.updateOptions({
+                        xaxis: { categories: categories14 }
+                    });
+                    trafficChart.updateSeries([{
+                        name: 'Pengunjung Web',
+                        data: values14
+                    }]);
+                });
+            }
+        }
+
+        // ==========================================
+        // 2. CHART KOMPLEMENTER SESUAI ROLE USER
+        // ==========================================
+        @if(session('user_role') === 'super_admin')
+            // Donut Chart: Audit Trail & Keamanan Sistem untuk Super Admin
+            const saSeries = @json($superAdminChartData['series']);
+            const saLabels = @json($superAdminChartData['labels']);
+            const saColors = @json($superAdminChartData['colors']);
+
+            const saOptions = {
+                series: saSeries,
+                labels: saLabels,
+                colors: saColors,
+                chart: {
+                    type: 'donut',
+                    height: 290,
+                    fontFamily: "'Poppins', sans-serif"
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '72%',
+                            labels: {
+                                show: true,
+                                name: {
+                                    show: true,
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    color: '#64748b',
+                                    offsetY: -4
+                                },
+                                value: {
+                                    show: true,
+                                    fontSize: '22px',
+                                    fontWeight: 800,
+                                    color: '#0f172a',
+                                    offsetY: 4,
+                                    formatter: function(val) {
+                                        return val;
+                                    }
+                                },
+                                total: {
+                                    show: true,
+                                    label: 'Total Aktivitas',
+                                    fontSize: '11px',
+                                    fontWeight: 700,
+                                    color: '#94a3b8',
+                                    formatter: function(w) {
+                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                dataLabels: { enabled: false },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    markers: { radius: 12 },
+                    itemMargin: { horizontal: 6, vertical: 3 }
+                },
+                tooltip: {
+                    theme: 'light',
+                    y: {
+                        formatter: function(val) {
+                            return val + ' aksi audit terekam';
+                        }
+                    }
+                },
+                stroke: { width: 2, colors: ['#ffffff'] }
+            };
+
+            const saChartEl = document.querySelector("#chart-role-superadmin");
+            if (saChartEl) {
+                const saChart = new ApexCharts(saChartEl, saOptions);
+                saChart.render();
+            }
+        @else
+            // Donut Chart: Pipeline Leads & Deals Konversi untuk Admin
+            const adminSeries = @json($adminChartData['series']);
+            const adminLabels = @json($adminChartData['labels']);
+            const adminColors = @json($adminChartData['colors']);
+
+            const adminOptions = {
+                series: adminSeries,
+                labels: adminLabels,
+                colors: adminColors,
+                chart: {
+                    type: 'donut',
+                    height: 290,
+                    fontFamily: "'Poppins', sans-serif"
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '72%',
+                            labels: {
+                                show: true,
+                                name: {
+                                    show: true,
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    color: '#64748b',
+                                    offsetY: -4
+                                },
+                                value: {
+                                    show: true,
+                                    fontSize: '22px',
+                                    fontWeight: 800,
+                                    color: '#0f172a',
+                                    offsetY: 4,
+                                    formatter: function(val) {
+                                        return val;
+                                    }
+                                },
+                                total: {
+                                    show: true,
+                                    label: 'Total Leads',
+                                    fontSize: '11px',
+                                    fontWeight: 700,
+                                    color: '#94a3b8',
+                                    formatter: function(w) {
+                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                dataLabels: { enabled: false },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    markers: { radius: 12 },
+                    itemMargin: { horizontal: 6, vertical: 3 }
+                },
+                tooltip: {
+                    theme: 'light',
+                    y: {
+                        formatter: function(val) {
+                            return val + ' prospek / klien';
+                        }
+                    }
+                },
+                stroke: { width: 2, colors: ['#ffffff'] }
+            };
+
+            const adminChartEl = document.querySelector("#chart-role-admin");
+            if (adminChartEl) {
+                const adminChart = new ApexCharts(adminChartEl, adminOptions);
+                adminChart.render();
+            }
+        @endif
+    }
+
+    initDashboardCharts();
+});
+</script>
+@endpush

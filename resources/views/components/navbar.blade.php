@@ -43,6 +43,10 @@
             'href'  => '/news',
         ],
         [
+            'label' => ['id' => 'Event', 'en' => 'Events'],
+            'href'  => '/events',
+        ],
+        [
             'label' => ['id' => 'Kontak', 'en' => 'Contact'],
             'href'  => '/contact',
         ],
@@ -198,8 +202,16 @@
         </div>
     </nav>
 
+    @php
+        $isHomePage = request()->is('/');
+    @endphp
+
     {{-- Sub-category bar --}}
-    <div class="border-t border-border/50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+    <div
+        id="subnav-category-bar"
+        class="border-border/50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 overflow-hidden {{ $isHomePage ? 'border-t-0' : 'border-t' }}"
+        style="transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease; {{ $isHomePage ? 'max-height: 0px; opacity: 0; transform: translateY(-8px); pointer-events: none; border-top-width: 0px;' : 'max-height: 60px; opacity: 1; transform: translateY(0); pointer-events: auto;' }}"
+    >
         <div class="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
             <div class="relative flex items-center gap-1 sm:gap-2">
                 {{-- Left slide arrow --}}
@@ -218,14 +230,16 @@
                             ['key' => 'all',      'slug' => 'semua',      'label' => ['id' => 'Semua',     'en' => 'All'],      'href' => '/news',                     'icon' => 'grid'],
                             ['key' => 'company',  'slug' => 'perusahaan', 'label' => ['id' => 'Perusahaan','en' => 'Company'],  'href' => '/news/category/perusahaan', 'icon' => 'building'],
                             ['key' => 'project',  'slug' => 'proyek',     'label' => ['id' => 'Proyek',    'en' => 'Project'],  'href' => '/news/category/proyek',     'icon' => 'folder'],
-                            ['key' => 'event',    'slug' => 'event',      'label' => ['id' => 'Event',     'en' => 'Event'],    'href' => '/news/category/event',      'icon' => 'calendar'],
+                            ['key' => 'event',    'slug' => 'event',      'label' => ['id' => 'Event',     'en' => 'Event'],    'href' => '/events',                   'icon' => 'calendar'],
                             ['key' => 'tech',     'slug' => 'teknologi',  'label' => ['id' => 'Teknologi', 'en' => 'Tech'],     'href' => '/news/category/teknologi',  'icon' => 'cpu'],
                             ['key' => 'tips',     'slug' => 'tips',       'label' => ['id' => 'Tips',      'en' => 'Tips'],     'href' => '/news/category/tips',       'icon' => 'lightbulb'],
                             ['key' => 'industry', 'slug' => 'industri',   'label' => ['id' => 'Industri',  'en' => 'Industry'], 'href' => '/news/category/industri',  'icon' => 'briefcase'],
                         ];
 
                         $activeCategoryNav = null;
-                        if (request()->is('news')) {
+                        if (request()->is('events*')) {
+                            $activeCategoryNav = 'event';
+                        } elseif (request()->is('news')) {
                             $qCat = request()->query('category');
                             $activeCategoryNav = $qCat ? strtolower($qCat) : 'all';
                         } elseif (request()->is('news/category/*')) {
@@ -317,6 +331,9 @@
         if (subnavContainer) {
             subnavContainer.addEventListener('scroll', updateSubnavButtons, { passive: true });
             window.addEventListener('resize', updateSubnavButtons);
+            window.addEventListener('subnav-visibility-change', function() {
+                setTimeout(updateSubnavButtons, 350);
+            });
             setTimeout(function() {
                 updateSubnavButtons();
                 const activeNavEl = subnavContainer.querySelector('[aria-current="page"]');
@@ -324,6 +341,81 @@
                     activeNavEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 }
             }, 100);
+        }
+    })();
+    </script>
+
+    {{-- Subnav Category Bar Show/Hide on Scroll (Hero Section Page) --}}
+    <script>
+    (function() {
+        const subnavCategoryBar = document.getElementById('subnav-category-bar');
+        const heroSection       = document.querySelector('[data-hero-section]');
+
+        if (!subnavCategoryBar) return;
+
+        // Jika halaman tidak memiliki hero section, pastikan subnav tampil normal
+        if (!heroSection) {
+            subnavCategoryBar.style.maxHeight = '';
+            subnavCategoryBar.style.opacity = '';
+            subnavCategoryBar.style.transform = '';
+            subnavCategoryBar.style.pointerEvents = '';
+            subnavCategoryBar.style.borderTopWidth = '';
+            subnavCategoryBar.classList.remove('border-t-0');
+            subnavCategoryBar.classList.add('border-t');
+            return;
+        }
+
+        let isVisible = false;
+        const scrollThreshold = 150;
+
+        function showSubnav() {
+            if (isVisible) return;
+            isVisible = true;
+            subnavCategoryBar.style.maxHeight = '60px';
+            subnavCategoryBar.style.opacity = '1';
+            subnavCategoryBar.style.transform = 'translateY(0)';
+            subnavCategoryBar.style.pointerEvents = 'auto';
+            subnavCategoryBar.style.borderTopWidth = '1px';
+            subnavCategoryBar.classList.remove('border-t-0');
+            subnavCategoryBar.classList.add('border-t');
+            window.dispatchEvent(new Event('subnav-visibility-change'));
+        }
+
+        function hideSubnav() {
+            if (!isVisible) return;
+            isVisible = false;
+            subnavCategoryBar.style.maxHeight = '0px';
+            subnavCategoryBar.style.opacity = '0';
+            subnavCategoryBar.style.transform = 'translateY(-8px)';
+            subnavCategoryBar.style.pointerEvents = 'none';
+            subnavCategoryBar.style.borderTopWidth = '0px';
+            subnavCategoryBar.classList.remove('border-t');
+            subnavCategoryBar.classList.add('border-t-0');
+            window.dispatchEvent(new Event('subnav-visibility-change'));
+        }
+
+        function onScroll() {
+            const currentScroll = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+            if (currentScroll > scrollThreshold) {
+                showSubnav();
+            } else {
+                hideSubnav();
+            }
+        }
+
+        onScroll();
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        if (window.lenis) {
+            window.lenis.on('scroll', onScroll);
+        } else {
+            const checkLenis = setInterval(function() {
+                if (window.lenis) {
+                    window.lenis.on('scroll', onScroll);
+                    clearInterval(checkLenis);
+                }
+            }, 100);
+            setTimeout(function() { clearInterval(checkLenis); }, 3000);
         }
     })();
     </script>
