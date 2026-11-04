@@ -21,6 +21,16 @@ document.addEventListener('click', (event) => {
     if (!anchor) return;
 
     const href = anchor.getAttribute('href');
+    if (!href) return;
+
+    // If anchor points to a different pathname/page (e.g. /services#service-card-...), allow normal navigation!
+    try {
+        const url = new URL(anchor.href, window.location.href);
+        if (url.origin === window.location.origin && url.pathname !== window.location.pathname) {
+            return;
+        }
+    } catch (e) {}
+
     const hashIndex = href.indexOf('#');
     if (hashIndex === -1) return;
 

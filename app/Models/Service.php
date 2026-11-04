@@ -15,6 +15,7 @@ class Service extends Model
         'price',
         'category',
         'description',
+        'content',
         'icon',
         'features',
         'badge',

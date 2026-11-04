@@ -62,6 +62,7 @@ class ServiceCrudTest extends TestCase
             'price'       => 'Mulai Rp 18.000.000',
             'category'    => 'DevOps',
             'description' => 'Automasi build, test, dan deployment berbasis GitHub Actions dan Kubernetes.',
+            'content'     => 'Rincian arsitektur CI/CD lengkap berbasis Kubernetes enterprise.',
             'badge'       => 'Enterprise',
             'features'    => "Docker & Kubernetes Orchestration\nAutomated CI/CD Pipeline\nInfrastructure as Code (Terraform)",
             'icon'        => 'cloud',
@@ -83,10 +84,12 @@ class ServiceCrudTest extends TestCase
             ['Docker & Kubernetes Orchestration', 'Automated CI/CD Pipeline', 'Infrastructure as Code (Terraform)'],
             $created->features
         );
+        $this->assertEquals('Rincian arsitektur CI/CD lengkap berbasis Kubernetes enterprise.', $created->content);
 
         // 2. Verify it appears on /services and /
         $this->get('/services')->assertSee('Cloud DevOps &amp; CI/CD Pipeline', false);
         $this->get('/')->assertSee('Cloud DevOps &amp; CI/CD Pipeline', false);
+        $this->get('/services/' . $created->slug)->assertSee('Rincian arsitektur CI/CD lengkap berbasis Kubernetes enterprise.');
 
         // 3. Update the service
         $updateData = [
@@ -94,6 +97,7 @@ class ServiceCrudTest extends TestCase
             'price'       => 'Mulai Rp 22.000.000',
             'category'    => 'DevOps & SRE',
             'description' => 'Solusi modernisasi infrastruktur cloud dan arsitektur microservices enterprise.',
+            'content'     => 'Konten yang sudah diperbarui dengan arsitektur multi-cloud.',
             'badge'       => 'Pro',
             'features'    => "Multi-cluster Kubernetes\nPrometheus & Grafana Monitoring",
             'icon'        => 'server',
@@ -105,12 +109,15 @@ class ServiceCrudTest extends TestCase
 
         $response->assertRedirect(route('admin.services.index'));
         $this->assertDatabaseHas('services', [
-            'id'    => $created->id,
-            'title' => 'Cloud DevOps & Kubernetes Pro',
+            'id'      => $created->id,
+            'title'   => 'Cloud DevOps & Kubernetes Pro',
+            'content' => 'Konten yang sudah diperbarui dengan arsitektur multi-cloud.',
         ]);
 
         // 4. Verify updated title appears on public page
         $this->get('/services')->assertSee('Cloud DevOps &amp; Kubernetes Pro', false);
+        $created->refresh(); // slug may have changed after title update
+        $this->get('/services/' . $created->slug)->assertSee('Konten yang sudah diperbarui dengan arsitektur multi-cloud.');
 
         // 5. Delete the service
         $response = $this->withSession(['admin_logged_in' => true, 'user_role' => 'super_admin', 'user_id' => 1])

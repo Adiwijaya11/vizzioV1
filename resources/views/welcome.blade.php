@@ -403,7 +403,7 @@
             {{-- Services Cards Grid --}}
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
                 @forelse ($servicesList as $s)
-                    <div id="service-card-{{ $s->slug }}" class="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border bg-white p-3.5 sm:p-6 lg:p-7 transition-all duration-[1900ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-primary hover:shadow-[0_22px_44px_rgba(29,78,216,0.28)] flex flex-col justify-between scroll-mt-28">
+                    <div id="service-card-{{ $s->slug }}" onclick="window.location.href='/services#service-card-{{ $s->slug }}'" class="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border bg-white p-3.5 sm:p-6 lg:p-7 transition-all duration-[1900ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-primary hover:shadow-[0_22px_44px_rgba(29,78,216,0.28)] flex flex-col justify-between scroll-mt-28 cursor-pointer">
                         {{-- Fluid Wave Fill: slow rise from bottom --}}
                         <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-xl sm:rounded-2xl" aria-hidden="true">
                             <div class="service-wave-rise absolute inset-x-0 -bottom-2 -top-6">

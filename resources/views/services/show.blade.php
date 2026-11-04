@@ -145,6 +145,27 @@
     </div>
 </section>
 
+{{-- Custom Content dari Superadmin CRUD (jika diisi) --}}
+@if(!empty($service->content))
+<section class="py-12 sm:py-16 bg-white border-b border-border/70">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary border border-primary/20 mb-2">
+                <span data-lang-id>RINCIAN LENGKAP LAYANAN</span>
+                <span data-lang-en class="hidden">COMPLETE SERVICE DETAILS</span>
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink">
+                <span data-lang-id>Detail & Spesifikasi Layanan</span>
+                <span data-lang-en class="hidden">Service Specifications & Scope</span>
+            </h2>
+        </div>
+        <div class="prose prose-slate max-w-none text-sm sm:text-base text-ink leading-relaxed whitespace-pre-line bg-slate-50/80 p-6 sm:p-8 rounded-2xl border border-border shadow-xs">
+{{ $service->content }}
+        </div>
+    </div>
+</section>
+@endif
+
 @if($isLms)
     {{-- ============================================================ --}}
     {{-- LMS SPECIALIZED CONTENT: MENDALAM, DETAIL & INTERAKTIF        --}}
@@ -655,3 +676,4 @@
 />
 
 @endsection
+

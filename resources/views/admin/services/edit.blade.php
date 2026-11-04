@@ -68,6 +68,12 @@
                 <span style="font-size: 11px; color: #94a3b8; margin-top: 4px; display: block;">Pisahkan tiap poin dengan tombol Enter (baris baru).</span>
             </div>
 
+            <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 6px;">Konten Detail Layanan (Isi Lengkap Halaman Show)</label>
+                <textarea name="content" rows="6" placeholder="Tuliskan penjelasan mendalam, silabus kurikulum, spesifikasi teknis, atau rincian modul yang akan ditampilkan di halaman detail layanan..." style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; font-family: 'Poppins', sans-serif; line-height: 1.6;">{{ old('content', $service->content) }}</textarea>
+                <span style="font-size: 11px; color: #94a3b8; margin-top: 4px; display: block;">Mendukung teks deskripsi panjang / paragraf untuk mengisi halaman show detail layanan.</span>
+            </div>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div>
                     <label style="display: block; font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 6px;">Ikon Sistem</label>

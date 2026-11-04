@@ -47,3 +47,4 @@ class ServiceController extends Controller
         return view('services.show', compact('service', 'relatedServices'));
     }
 }
+
