@@ -26,7 +26,7 @@
                     <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px;">
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <div style="width: 42px; height: 42px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; border: 1px solid #bfdbfe;">
-                                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $svc->icon_path }}"/></svg>
                             </div>
                             <div>
                                 <h3 style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 0;">{{ $svc->title }}</h3>

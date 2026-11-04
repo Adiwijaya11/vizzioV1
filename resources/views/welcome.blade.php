@@ -339,47 +339,28 @@
                                 </div>
 
                                 {{-- Recommendation Popover (Shown On Focus/Click/Type) --}}
+                                @php
+                                    try {
+                                        $servicesList = \App\Models\Service::where('status', 'active')->orderBy('id')->get();
+                                    } catch (\Throwable $e) {
+                                        $servicesList = collect();
+                                    }
+                                @endphp
                                 <div id="hero-search-recommendations" class="hidden absolute top-full left-0 right-0 z-50 mt-1.5 sm:mt-2 bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-2xl p-2 sm:p-2.5 transform transition-all duration-200 origin-top max-h-48 sm:max-h-60 overflow-y-auto">
                                     <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2 sm:px-2.5 py-1">
                                         <span data-lang-id>Rekomendasi Layanan</span>
                                         <span data-lang-en class="hidden">Recommended Services</span>
                                     </div>
                                     <div class="mt-1 space-y-0.5" id="recommendations-list">
-                                        <button type="button" data-service-chip="apps-software-development" data-title="Apps & Software Development" class="rec-item w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-800 hover:bg-primary/5 hover:text-primary transition-colors flex items-center justify-between group">
+                                        @foreach ($servicesList as $s)
+                                        <button type="button" data-service-chip="{{ $s->slug }}" data-title="{{ $s->title }}" class="rec-item w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-800 hover:bg-primary/5 hover:text-primary transition-colors flex items-center justify-between group">
                                             <span class="flex items-center gap-2">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary"></span>
-                                                Apps & Software Development
+                                                {{ $s->title }}
                                             </span>
-                                            <span class="text-[10px] text-slate-400 group-hover:text-primary font-normal">Custom App</span>
+                                            <span class="text-[10px] text-slate-400 group-hover:text-primary font-normal">{{ $s->category }}</span>
                                         </button>
-                                        <button type="button" data-service-chip="lms-development" data-title="LMS Development" class="rec-item w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-800 hover:bg-primary/5 hover:text-primary transition-colors flex items-center justify-between group">
-                                            <span class="flex items-center gap-2">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary"></span>
-                                                LMS Development
-                                            </span>
-                                            <span class="text-[10px] text-slate-400 group-hover:text-primary font-normal">E-Learning</span>
-                                        </button>
-                                        <button type="button" data-service-chip="web-design" data-title="Web Design" class="rec-item w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-800 hover:bg-primary/5 hover:text-primary transition-colors flex items-center justify-between group">
-                                            <span class="flex items-center gap-2">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary"></span>
-                                                Web Design
-                                            </span>
-                                            <span class="text-[10px] text-slate-400 group-hover:text-primary font-normal">UI/UX & Site</span>
-                                        </button>
-                                        <button type="button" data-service-chip="hosting" data-title="Hosting" class="rec-item w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-800 hover:bg-primary/5 hover:text-primary transition-colors flex items-center justify-between group">
-                                            <span class="flex items-center gap-2">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary"></span>
-                                                Hosting & Cloud Server
-                                            </span>
-                                            <span class="text-[10px] text-slate-400 group-hover:text-primary font-normal">Cloud & VPS</span>
-                                        </button>
-                                        <button type="button" data-service-chip="seo-services" data-title="SEO Services" class="rec-item w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-800 hover:bg-primary/5 hover:text-primary transition-colors flex items-center justify-between group">
-                                            <span class="flex items-center gap-2">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary"></span>
-                                                SEO Services
-                                            </span>
-                                            <span class="text-[10px] text-slate-400 group-hover:text-primary font-normal">Google Ranking</span>
-                                        </button>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -415,60 +396,10 @@
                 </p>
             </div>
 
-            {{-- 9 Services Cards Grid --}}
+            {{-- Services Cards Grid --}}
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
-                @php
-                    $detailedServices = [
-                        [
-                            'title' => 'Apps & Software Development',
-                            'desc' => 'Pengembangan aplikasi custom web & mobile berbasis arsitektur modern yang cepat, aman, dan scalable.',
-                            'icon' => 'code',
-                        ],
-                        [
-                            'title' => 'LMS Development',
-                            'desc' => 'Platform Learning Management System interaktif untuk kebutuhan pelatihan perusahaan, sekolah, dan akademi.',
-                            'icon' => 'academic',
-                        ],
-                        [
-                            'title' => 'Domain',
-                            'desc' => 'Layanan pendaftaran & konfigurasi nama domain bisnis tingkat lanjut secara cepat, praktis, dan terpercaya.',
-                            'icon' => 'globe',
-                        ],
-                        [
-                            'title' => 'Web Design',
-                            'desc' => 'Desain UI/UX website modern berkelas dengan estetika visual tinggi yang responsif di seluruh perangkat.',
-                            'icon' => 'layout',
-                        ],
-                        [
-                            'title' => 'Hosting',
-                            'desc' => 'Infrastruktur cloud hosting & server berkecepatan tinggi dengan jaminan proteksi data dan 99.9% uptime.',
-                            'icon' => 'server',
-                        ],
-                        [
-                            'title' => 'IoT Solutions',
-                            'desc' => 'Integrasi sistem sensor pintar & perangkat otomatisasi berbasis Internet of Things untuk efisiensi bisnis.',
-                            'icon' => 'cpu',
-                        ],
-                        [
-                            'title' => 'IT Maintenance',
-                            'desc' => 'Pemeliharaan sistem berkesinambungan, monitoring server, audit keamanan, dan bantuan teknis 24/7.',
-                            'icon' => 'shield',
-                        ],
-                        [
-                            'title' => 'Digital Consulting',
-                            'desc' => 'Konsultasi strategi teknologi, analisis kebutuhan sistem, dan peta jalan transformasi digital perusahaan.',
-                            'icon' => 'lightbulb',
-                        ],
-                        [
-                            'title' => 'SEO Services',
-                            'desc' => 'Optimasi mesin pencari organik untuk meningkatkan visibilitas brand, peringkat Google, dan konversi.',
-                            'icon' => 'search',
-                        ],
-                    ];
-                @endphp
-
-                @foreach ($detailedServices as $s)
-                    <div id="service-card-{{ Str::slug($s['title']) }}" class="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border bg-white p-3.5 sm:p-6 lg:p-7 transition-all duration-[1900ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-primary hover:shadow-[0_22px_44px_rgba(29,78,216,0.28)] flex flex-col justify-between scroll-mt-28">
+                @forelse ($servicesList as $s)
+                    <div id="service-card-{{ $s->slug }}" class="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border bg-white p-3.5 sm:p-6 lg:p-7 transition-all duration-[1900ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-primary hover:shadow-[0_22px_44px_rgba(29,78,216,0.28)] flex flex-col justify-between scroll-mt-28">
                         {{-- Fluid Wave Fill: slow rise from bottom --}}
                         <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-xl sm:rounded-2xl" aria-hidden="true">
                             <div class="service-wave-rise absolute inset-x-0 -bottom-2 -top-6">
@@ -495,50 +426,23 @@
                         <div class="relative z-10">
                             {{-- Icon Header --}}
                             <div class="h-9 w-9 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3 sm:mb-6 service-wave-ink group-hover:bg-white/15 group-hover:text-white group-hover:scale-110 group-hover:shadow-[0_0_0_1px_rgba(255,255,255,0.25)]">
-
-                                @switch($s['icon'])
-                                    @case('code')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-                                        @break
-                                    @case('academic')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-                                        @break
-                                    @case('globe')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                                        @break
-                                    @case('layout')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
-                                        @break
-                                    @case('server')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-                                        @break
-                                    @case('cpu')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M3 9h2m-2 6h2m14-6h2m-2 6h2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
-                                        @break
-                                    @case('shield')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                        @break
-                                    @case('lightbulb')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-                                        @break
-                                    @case('search')
-                                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                        @break
-                                 @endswitch
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $s->icon_path }}" />
+                                </svg>
                             </div>
 
                             {{-- Title & Description --}}
                             <h3 class="text-sm sm:text-base lg:text-xl font-bold text-ink mb-1.5 sm:mb-3 service-wave-ink group-hover:text-white leading-snug">
-                                {{ $s['title'] }}
+                                {{ $s->title }}
                             </h3>
                             <p class="text-xs sm:text-sm text-ink-muted leading-relaxed mb-3 sm:mb-6 font-normal service-wave-ink group-hover:text-white/80 line-clamp-3 sm:line-clamp-none">
-                                {{ $s['desc'] }}
+                                {{ $s->description }}
                             </p>
                         </div>
 
                         {{-- Card Link Footer --}}
                         <div class="relative z-10 pt-2.5 sm:pt-4 border-t border-border/40 service-wave-ink group-hover:border-white/25">
-                            <a href="/#contact" class="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-semibold text-primary service-wave-ink group-hover:text-white">
+                            <a href="/services#all-services" class="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-semibold text-primary service-wave-ink group-hover:text-white">
                                 <span class="truncate">Pelajari Lebih Lanjut</span>
                                 <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -546,7 +450,11 @@
                             </a>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-border text-ink-muted">
+                        Belum ada layanan digital yang aktif.
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -694,15 +602,9 @@
 
     // Service Search Logic
     var servicesData = [
-        { title: { id: 'Apps & Software Development', en: 'Apps & Software Development' }, slug: 'apps-software-development' },
-        { title: { id: 'LMS Development', en: 'LMS Development' }, slug: 'lms-development' },
-        { title: { id: 'Domain', en: 'Domain' }, slug: 'domain' },
-        { title: { id: 'Web Design', en: 'Web Design' }, slug: 'web-design' },
-        { title: { id: 'Hosting', en: 'Hosting' }, slug: 'hosting' },
-        { title: { id: 'IoT Solutions', en: 'IoT Solutions' }, slug: 'iot-solutions' },
-        { title: { id: 'IT Maintenance', en: 'IT Maintenance' }, slug: 'it-maintenance' },
-        { title: { id: 'Digital Consulting', en: 'Digital Consulting' }, slug: 'digital-consulting' },
-        { title: { id: 'SEO Services', en: 'SEO Services' }, slug: 'seo-services' }
+        @foreach($servicesList as $s)
+        { title: { id: @json($s->title), en: @json($s->title) }, slug: @json($s->slug) },
+        @endforeach
     ];
 
     var searchInput = document.getElementById('hero-search-input');

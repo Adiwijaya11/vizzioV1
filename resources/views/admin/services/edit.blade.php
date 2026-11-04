@@ -72,12 +72,18 @@
                 <div>
                     <label style="display: block; font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 6px;">Ikon Sistem</label>
                     <select name="icon" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; font-family: 'Poppins', sans-serif; background: #fff;">
-                        <option value="code" {{ old('icon', $service->icon) == 'code' ? 'selected' : '' }}>Code / Software (code)</option>
+                        <option value="code" {{ old('icon', $service->icon) == 'code' ? 'selected' : '' }}>Apps & Code / Software (code)</option>
+                        <option value="academic" {{ old('icon', $service->icon) == 'academic' ? 'selected' : '' }}>LMS & Education / Akademi (academic)</option>
+                        <option value="globe" {{ old('icon', $service->icon) == 'globe' ? 'selected' : '' }}>Domain & Web Global (globe)</option>
+                        <option value="layout" {{ old('icon', $service->icon) == 'layout' ? 'selected' : '' }}>Web Design & UI/UX (layout)</option>
+                        <option value="server" {{ old('icon', $service->icon) == 'server' ? 'selected' : '' }}>Hosting & Cloud Server (server)</option>
+                        <option value="cpu" {{ old('icon', $service->icon) == 'cpu' ? 'selected' : '' }}>IoT Solutions & Hardware (cpu)</option>
+                        <option value="shield" {{ old('icon', $service->icon) == 'shield' ? 'selected' : '' }}>IT Maintenance & Keamanan (shield)</option>
+                        <option value="lightbulb" {{ old('icon', $service->icon) == 'lightbulb' ? 'selected' : '' }}>Digital Consulting & Strategi (lightbulb)</option>
+                        <option value="search" {{ old('icon', $service->icon) == 'search' ? 'selected' : '' }}>SEO & Search Marketing (search)</option>
                         <option value="cloud" {{ old('icon', $service->icon) == 'cloud' ? 'selected' : '' }}>Cloud Infrastructure (cloud)</option>
-                        <option value="cpu" {{ old('icon', $service->icon) == 'cpu' ? 'selected' : '' }}>IoT / Hardware (cpu)</option>
-                        <option value="layout" {{ old('icon', $service->icon) == 'layout' ? 'selected' : '' }}>Design UI/UX (layout)</option>
-                        <option value="database" {{ old('icon', $service->icon) == 'database' ? 'selected' : '' }}>Database & Hosting (database)</option>
-                        <option value="chart" {{ old('icon', $service->icon) == 'chart' ? 'selected' : '' }}>SEO & Marketing (chart)</option>
+                        <option value="database" {{ old('icon', $service->icon) == 'database' ? 'selected' : '' }}>Database & Storage (database)</option>
+                        <option value="chart" {{ old('icon', $service->icon) == 'chart' ? 'selected' : '' }}>Analytics & Pertumbuhan (chart)</option>
                     </select>
                 </div>
                 <div>

@@ -12,17 +12,29 @@ class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $services = Service::latest()->get();
+        if (!session('admin_logged_in')) {
+            return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
+        }
+
+        $services = Service::orderBy('id')->get();
         return view('admin.services.index', compact('services'));
     }
 
     public function create()
     {
+        if (!session('admin_logged_in')) {
+            return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
+        }
+
         return view('admin.services.create');
     }
 
     public function store(Request $request)
     {
+        if (!session('admin_logged_in')) {
+            return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
+        }
+
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'price'       => 'required|string|max:255',
@@ -36,12 +48,20 @@ class ServiceController extends Controller
 
         $featuresArr = [];
         if (!empty($validated['features'])) {
-            $featuresArr = array_filter(array_map('trim', explode("\n", $validated['features'])));
+            $featuresArr = array_values(array_filter(array_map('trim', explode("\n", $validated['features']))));
+        }
+
+        $baseSlug = Str::slug($validated['title']);
+        $slug = $baseSlug ?: 'service';
+        $count = 1;
+        while (Service::where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$count}";
+            $count++;
         }
 
         $service = Service::create([
             'title'       => $validated['title'],
-            'slug'        => Str::slug($validated['title']),
+            'slug'        => $slug,
             'price'       => $validated['price'],
             'category'    => $validated['category'],
             'description' => $validated['description'],
@@ -65,12 +85,20 @@ class ServiceController extends Controller
 
     public function edit($id)
     {
+        if (!session('admin_logged_in')) {
+            return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
+        }
+
         $service = Service::findOrFail($id);
         return view('admin.services.edit', compact('service'));
     }
 
     public function update(Request $request, $id)
     {
+        if (!session('admin_logged_in')) {
+            return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
+        }
+
         $service = Service::findOrFail($id);
 
         $validated = $request->validate([
@@ -86,11 +114,20 @@ class ServiceController extends Controller
 
         $featuresArr = [];
         if (!empty($validated['features'])) {
-            $featuresArr = array_filter(array_map('trim', explode("\n", $validated['features'])));
+            $featuresArr = array_values(array_filter(array_map('trim', explode("\n", $validated['features']))));
+        }
+
+        $baseSlug = Str::slug($validated['title']);
+        $slug = $baseSlug ?: 'service';
+        $count = 1;
+        while (Service::where('slug', $slug)->where('id', '!=', $service->id)->exists()) {
+            $slug = "{$baseSlug}-{$count}";
+            $count++;
         }
 
         $service->update([
             'title'       => $validated['title'],
+            'slug'        => $slug,
             'price'       => $validated['price'],
             'category'    => $validated['category'],
             'description' => $validated['description'],
@@ -114,6 +151,10 @@ class ServiceController extends Controller
 
     public function destroy(Request $request, $id)
     {
+        if (!session('admin_logged_in')) {
+            return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
+        }
+
         $service = Service::findOrFail($id);
         $title = $service->title;
         $service->delete();

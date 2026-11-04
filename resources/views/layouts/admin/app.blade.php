@@ -107,6 +107,7 @@
         .badge-green       { background: #d1fae5; color: #065f46; }
         .badge-red         { background: #fee2e2; color: #991b1b; }
         .badge-purple      { background: #ede9fe; color: #6d28d9; }
+        .badge-blue        { background: #dbeafe; color: #1e40af; }
 
         /* === FOOTER CARD === */
         .session-card      { background: #f8faff; border: 1px solid #e2e8f4; border-radius: 14px; padding: 12px 14px; }
@@ -168,6 +169,7 @@
                 <a href="/admin/services" class="nav-link {{ request()->is('admin/services*') ? 'active' : '' }}">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                     Layanan Digital
+                    <span class="nav-badge badge-blue">{{ \App\Models\Service::where('status', 'active')->count() }}</span>
                 </a>
                 <a href="/admin/gallery" class="nav-link {{ request()->is('admin/gallery*') ? 'active' : '' }}">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>

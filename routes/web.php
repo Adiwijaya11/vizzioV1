@@ -259,7 +259,12 @@ Route::get('/contact', function () {
 });
 
 Route::get('/services', function () {
-    return view('services');
+    try {
+        $services = \App\Models\Service::where('status', 'active')->orderBy('id')->get();
+    } catch (\Throwable $e) {
+        $services = collect();
+    }
+    return view('services', compact('services'));
 });
 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
