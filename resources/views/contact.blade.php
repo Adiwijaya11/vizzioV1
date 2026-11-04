@@ -40,7 +40,7 @@
                                     <span data-lang-id>Email</span>
                                     <span data-lang-en class="hidden">Email</span>
                                 </h3>
-                                <a href="mailto:hello@vizziocraft.com" class="text-xs sm:text-sm text-ink-muted lg:text-blue-100 hover:text-primary lg:hover:text-white transition-colors truncate block">hello@vizziocraft.com</a>
+                                <a href="mailto:vizziocraft@gmail.com" class="text-xs sm:text-sm text-ink-muted lg:text-blue-100 hover:text-primary lg:hover:text-white transition-colors truncate block">vizziocraft@gmail.com</a>
                                 <p class="text-xs sm:text-sm text-ink-muted/70 lg:text-blue-100/70 mt-0.5 sm:mt-1">
                                     <span data-lang-id>Balasan dalam 24 jam kerja</span>
                                     <span data-lang-en class="hidden">Response within 24 business hours</span>
@@ -80,8 +80,8 @@
                                     <span data-lang-en class="hidden">Location</span>
                                 </h3>
                                 <address class="text-xs sm:text-sm text-ink-muted lg:text-blue-100 not-italic leading-relaxed">
-                                    <span data-lang-id>Jakarta, Indonesia<br>(Remote-First, Global Reach)</span>
-                                    <span data-lang-en class="hidden">Jakarta, Indonesia<br>(Remote-First, Global Reach)</span>
+                                    <span data-lang-id>Denpasar, Bali, Indonesia<br>(Remote-First, Jangkauan Global)</span>
+                                    <span data-lang-en class="hidden">Denpasar, Bali, Indonesia<br>(Remote-First, Global Reach)</span>
                                 </address>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#F8FAFC] border border-border text-ink-muted hover:bg-primary/10 hover:border-primary/40 hover:text-primary lg:bg-white/10 lg:border-white/20 lg:text-blue-100 lg:hover:bg-white/20 lg:hover:border-white/40 lg:hover:text-white lg:hover:shadow-[0_4px_16px_rgba(255,255,255,.15)] transition-all duration-200 flex items-center justify-center">
                                 <svg class="w-4.5 h-4.5 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 9.24h-3.304l-7.58-8.667-7.577 8.667h-3.312l7.858-8.64-8.272-9.25h3.337l7.218 8.23L23.888 2.25z"/></svg>
                             </a>
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#F8FAFC] border border-border text-ink-muted hover:bg-primary/10 hover:border-primary/40 hover:text-primary lg:bg-white/10 lg:border-white/20 lg:text-blue-100 lg:hover:bg-white/20 lg:hover:border-white/40 lg:hover:text-white lg:hover:shadow-[0_4px_16px_rgba(255,255,255,.15)] transition-all duration-200 flex items-center justify-center">
+                            <a href="https://www.instagram.com/vizziocraft/" target="_blank" rel="noopener noreferrer" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#F8FAFC] border border-border text-ink-muted hover:bg-primary/10 hover:border-primary/40 hover:text-primary lg:bg-white/10 lg:border-white/20 lg:text-blue-100 lg:hover:bg-white/20 lg:hover:border-white/40 lg:hover:text-white lg:hover:shadow-[0_4px_16px_rgba(255,255,255,.15)] transition-all duration-200 flex items-center justify-center">
                                 <svg class="w-4.5 h-4.5 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/></svg>
                             </a>
                         </div>

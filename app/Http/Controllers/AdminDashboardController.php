@@ -625,16 +625,16 @@ class AdminDashboardController extends Controller
             'tagline'    => 'Bergerak Memberi Solusi',
             'vision'     => 'Menjadi agensi rekayasa teknologi dan transformasi digital terdepan di Asia Tenggara yang menghadirkan solusi berdampak nyata.',
             'mission'    => 'Membangun perangkat lunak berstandar global, mengedukasi talenta digital, dan mendampingi pertumbuhan bisnis dengan integritas tanpa kompromi.',
-            'address'    => 'Jakarta, Indonesia (Remote-First, Global Reach)',
+            'address'    => 'Denpasar, Bali, Indonesia (Remote-First, Global Reach)',
             'phone'      => '+62 831-1459-2416',
-            'email'      => 'hello@vizziocraft.com',
-            'support'    => 'support@vizziocraft.com',
+            'email'      => 'vizziocraft@gmail.com',
+            'support'    => 'vizziocraft@gmail.com',
             'founded'    => '2021',
             'socials'    => [
                 'LinkedIn' => 'https://linkedin.com/company/vizziocraft',
                 'GitHub'   => 'https://github.com/vizziocraft',
                 'Twitter'  => 'https://twitter.com/vizziocraft',
-                'Instagram'=> 'https://instagram.com/vizziocraft',
+                'Instagram'=> 'https://www.instagram.com/vizziocraft/',
             ],
         ];
 
