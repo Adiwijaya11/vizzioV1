@@ -121,4 +121,35 @@ class ServiceCrudTest extends TestCase
             'id' => $created->id,
         ]);
     }
+
+    public function test_service_show_page_displays_lms_details(): void
+    {
+        $lms = Service::create([
+            'title'       => 'LMS Development',
+            'slug'        => 'lms-development',
+            'price'       => 'Mulai Rp 15.000.000',
+            'category'    => 'EdTech',
+            'description' => 'Platform E-Learning & Manajemen Kursus Kustom.',
+            'icon'        => 'academic',
+            'features'    => ['Multi-Role User', 'Quiz & Exam Engine', 'Auto-Certificate'],
+            'badge'       => 'Popular',
+            'status'      => 'active',
+        ]);
+
+        $response = $this->get('/services/lms-development');
+
+        $response->assertStatus(200);
+        $response->assertSee('LMS Development');
+        $response->assertSee('Platform E-Learning');
+        $response->assertSee('Multi-Role RBAC Portal');
+        $response->assertSee('Curriculum Builder');
+        $response->assertSee('Auto-Generate Certificate');
+    }
+
+    public function test_service_show_returns_404_for_unknown_slug(): void
+    {
+        $response = $this->get('/services/non-existent-slug');
+
+        $response->assertStatus(404);
+    }
 }

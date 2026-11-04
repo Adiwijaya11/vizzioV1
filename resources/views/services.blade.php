@@ -90,15 +90,15 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($servicesList as $svc)
-            <div class="group bg-white rounded-2xl border border-border/80 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between">
+            <div id="service-card-{{ $svc->slug }}" class="group bg-white rounded-2xl border border-border/80 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col justify-between scroll-mt-28">
                 <div class="p-6 flex-1 flex flex-col">
                     {{-- Icon + Badge --}}
                     <div class="flex items-start justify-between mb-4">
-                        <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <a href="{{ route('services.show', $svc->slug) }}" class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
                             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="{{ $svc->icon_path ?? 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' }}" />
                             </svg>
-                        </div>
+                        </a>
                         @if(!empty($svc->badge))
                         <span class="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[10px] font-bold text-primary uppercase tracking-wide">
                             <span class="w-1 h-1 rounded-full bg-primary animate-pulse"></span>
@@ -109,7 +109,9 @@
 
                     {{-- Title & Description --}}
                     <h3 class="text-base font-bold text-ink mb-2 group-hover:text-primary transition-colors duration-200">
-                        {{ $svc->title }}
+                        <a href="{{ route('services.show', $svc->slug) }}" class="hover:underline">
+                            {{ $svc->title }}
+                        </a>
                     </h3>
                     <p class="text-sm text-ink-muted leading-relaxed mb-4 flex-1">
                         {{ $svc->description }}
@@ -140,14 +142,20 @@
                     </ul>
                     @endif
 
-                    {{-- Action Button --}}
-                    <a href="/contact?service={{ urlencode($svc->title) }}" class="inline-flex items-center justify-center gap-1.5 w-full rounded-xl border border-primary/20 bg-primary/5 text-primary font-semibold text-sm py-2.5 hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 group/btn">
-                        <span data-lang-id>Konsultasikan Sekarang</span>
-                        <span data-lang-en class="hidden">Consult Now</span>
-                        <svg class="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
-                    </a>
+                    {{-- Action Buttons --}}
+                    <div class="space-y-2 mt-auto pt-4 border-t border-border/40">
+                        <a href="{{ route('services.show', $svc->slug) }}" class="inline-flex items-center justify-center gap-1.5 w-full rounded-xl bg-primary text-white font-semibold text-xs sm:text-sm py-2.5 hover:bg-primary-deep transition-all duration-200 shadow-sm hover:shadow-md group/btn">
+                            <span data-lang-id>Pelajari Lebih Lanjut</span>
+                            <span data-lang-en class="hidden">Learn More</span>
+                            <svg class="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                        <a href="/contact?service={{ urlencode($svc->title) }}" class="inline-flex items-center justify-center gap-1.5 w-full rounded-xl border border-primary/20 bg-primary/5 text-primary font-semibold text-xs py-2 hover:bg-primary hover:text-white transition-all duration-200">
+                            <span data-lang-id>Konsultasikan Sekarang</span>
+                            <span data-lang-en class="hidden">Consult Now</span>
+                        </a>
+                    </div>
                 </div>
             </div>
             @empty
@@ -178,4 +186,23 @@
 />
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var hash = window.location.hash;
+    if (hash && hash.startsWith('#service-card-')) {
+        var card = document.querySelector(hash);
+        if (card) {
+            setTimeout(function() {
+                card.classList.add('ring-4', 'ring-primary/40', 'shadow-2xl');
+                setTimeout(function() {
+                    card.classList.remove('ring-4', 'ring-primary/40', 'shadow-2xl');
+                }, 3000);
+            }, 300);
+        }
+    }
+});
+</script>
+@endpush
 

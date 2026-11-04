@@ -437,7 +437,9 @@
 
                             {{-- Title & Description --}}
                             <h3 class="text-sm sm:text-base lg:text-xl font-bold text-ink mb-1.5 sm:mb-3 service-wave-ink group-hover:text-white leading-snug">
-                                {{ $s->title }}
+                                <a href="/services#service-card-{{ $s->slug }}" class="hover:underline">
+                                    {{ $s->title }}
+                                </a>
                             </h3>
                             <p class="text-xs sm:text-sm text-ink-muted leading-relaxed mb-3 sm:mb-6 font-normal service-wave-ink group-hover:text-white/80 line-clamp-3 sm:line-clamp-none">
                                 {{ $s->description }}
@@ -446,7 +448,7 @@
 
                         {{-- Card Link Footer --}}
                         <div class="relative z-10 pt-2.5 sm:pt-4 border-t border-border/40 service-wave-ink group-hover:border-white/25">
-                            <a href="/services#all-services" class="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-semibold text-primary service-wave-ink group-hover:text-white">
+                            <a href="/services#service-card-{{ $s->slug }}" class="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-semibold text-primary service-wave-ink group-hover:text-white">
                                 <span class="truncate">Pelajari Lebih Lanjut</span>
                                 <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>

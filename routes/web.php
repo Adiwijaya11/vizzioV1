@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\ProjectController;
-use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\TestimonialController;
@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ServiceController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -258,14 +259,8 @@ Route::get('/contact', function () {
     return view('contact');
 });
 
-Route::get('/services', function () {
-    try {
-        $services = \App\Models\Service::where('status', 'active')->orderBy('id')->get();
-    } catch (\Throwable $e) {
-        $services = collect();
-    }
-    return view('services', compact('services'));
-});
+Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+Route::get('/services/{slug}', [ServiceController::class, 'show'])->name('services.show');
 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
@@ -347,7 +342,7 @@ Route::middleware([])->group(function () {
     Route::resource('admin/news', NewsController::class)->names('admin.news');
     Route::resource('admin/events', AdminEventController::class)->names('admin.events');
     Route::resource('admin/projects', ProjectController::class)->names('admin.projects');
-    Route::resource('admin/services', ServiceController::class)->names('admin.services');
+    Route::resource('admin/services', AdminServiceController::class)->names('admin.services');
     Route::get('/admin/gallery', [GalleryController::class, 'index'])->name('admin.gallery.index');
     Route::post('/admin/gallery', [GalleryController::class, 'store'])->name('admin.gallery.store');
     Route::resource('admin/team', TeamController::class)->names('admin.team');
