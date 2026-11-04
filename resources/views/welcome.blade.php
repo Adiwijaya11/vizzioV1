@@ -25,7 +25,7 @@
 
 @section('content')
     {{-- Hero Section --}}
-    <section data-hero-section class="relative w-full h-[calc(100svh-4rem)] min-h-[calc(100svh-4rem)] flex items-center overflow-hidden">
+    <section data-hero-section class="relative z-30 w-full min-h-[calc(100svh-4rem)] lg:h-[calc(100svh-4rem)] flex items-center">
         {{-- Dark background gradient --}}
         <div class="absolute inset-0 bg-gradient-to-br from-primary-deep via-primary to-[#1E40AF]" aria-hidden="true"></div>
         
@@ -243,7 +243,7 @@
 
 
         {{-- Main Container --}}
-        <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8">
+        <div class="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8">
             <div id="hero-text" style="opacity: 0; transform: translateX(-90px);" class="w-full">
                 <div class="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-8 lg:gap-12 xl:gap-14">
                     
@@ -346,14 +346,14 @@
                                         $servicesList = collect();
                                     }
                                 @endphp
-                                <div id="hero-search-recommendations" class="hidden absolute top-full left-0 right-0 z-50 mt-1.5 sm:mt-2 bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-2xl p-2 sm:p-2.5 transform transition-all duration-200 origin-top max-h-48 sm:max-h-60 overflow-y-auto">
+                                <div id="hero-search-recommendations" data-lenis-prevent class="hidden absolute top-full left-0 right-0 z-[100] mt-1.5 sm:mt-2 bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-[0_20px_50px_rgba(15,23,42,0.22)] p-2 sm:p-2.5 transform transition-all duration-200 origin-top max-h-48 sm:max-h-60 overflow-y-auto">
                                     <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2 sm:px-2.5 py-1">
                                         <span data-lang-id>Rekomendasi Layanan</span>
                                         <span data-lang-en class="hidden">Recommended Services</span>
                                     </div>
                                     <div class="mt-1 space-y-0.5" id="recommendations-list">
                                         @foreach ($servicesList as $s)
-                                        <button type="button" data-service-chip="{{ $s->slug }}" data-title="{{ $s->title }}" class="rec-item w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-800 hover:bg-primary/5 hover:text-primary transition-colors flex items-center justify-between group">
+                                        <button type="button" data-service-chip="{{ $s->slug }}" data-title="{{ $s->title }}" class="rec-item w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-800 hover:bg-primary/5 hover:text-primary transition-colors flex items-center justify-between group cursor-pointer">
                                             <span class="flex items-center gap-2">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary"></span>
                                                 {{ $s->title }}
@@ -361,6 +361,10 @@
                                             <span class="text-[10px] text-slate-400 group-hover:text-primary font-normal">{{ $s->category }}</span>
                                         </button>
                                         @endforeach
+                                        <div id="rec-no-results" class="hidden px-3 py-4 text-center text-xs text-slate-400">
+                                            <span data-lang-id>Tidak ada layanan yang cocok</span>
+                                            <span data-lang-en class="hidden">No matching services</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -374,7 +378,7 @@
 
 
     {{-- Services Section (Seamless Transition) --}}
-    <section id="services" class="relative pt-20 pb-36 bg-[#F8FAFC] overflow-hidden">
+    <section id="services" class="relative z-10 pt-20 pb-36 bg-[#F8FAFC] overflow-hidden">
         {{-- Decorative Round Blobs Background --}}
         <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-primary/8 pointer-events-none" aria-hidden="true"></div>
         <div class="absolute top-1/3 -right-20 w-96 h-96 rounded-full bg-primary/6 pointer-events-none" aria-hidden="true"></div>
@@ -695,14 +699,20 @@
         searchInput.addEventListener('input', function() {
             var val = searchInput.value.toLowerCase().trim();
             showRecs();
+            var visibleCount = 0;
             document.querySelectorAll('.rec-item').forEach(function(item) {
                 var title = (item.getAttribute('data-title') || '').toLowerCase();
                 if (val === '' || title.indexOf(val) !== -1) {
                     item.style.display = 'flex';
+                    visibleCount++;
                 } else {
                     item.style.display = 'none';
                 }
             });
+            var noResultEl = document.getElementById('rec-no-results');
+            if (noResultEl) {
+                noResultEl.style.display = (visibleCount === 0) ? 'block' : 'none';
+            }
         });
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') { e.preventDefault(); hideRecs(); doSearch(); }
@@ -716,6 +726,13 @@
             hideRecs();
         }
     });
+
+    window.addEventListener('scroll', function() {
+        if (recBox && !recBox.classList.contains('hidden')) {
+            hideRecs();
+            if (searchInput) searchInput.blur();
+        }
+    }, { passive: true });
 
     if (searchBtn) {
         searchBtn.addEventListener('click', function() {
