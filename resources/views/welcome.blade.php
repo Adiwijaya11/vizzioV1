@@ -29,9 +29,10 @@
         {{-- Dark background gradient --}}
         <div class="absolute inset-0 bg-gradient-to-br from-primary-deep via-primary to-[#1E40AF]" aria-hidden="true"></div>
         
-        {{-- Background Shape — Organic SVG Blob --}}
-        <div id="hero-blob" style="opacity: 0; transform: translateX(-160px);" class="absolute inset-0 z-0 pointer-events-none overflow-hidden lg:block hidden" aria-hidden="true">
-            <svg class="absolute left-0 top-0 w-full h-full" viewBox="0 0 1200 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- Background Shape — Organic SVG Blob (Responsive: Mobile + Desktop) --}}
+        <div id="hero-blob" style="opacity: 0; transform: translateX(-160px);" class="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+            {{-- Desktop SVG Blob (Screens lg and above) --}}
+            <svg class="hidden lg:block absolute left-0 top-0 w-full h-full" viewBox="0 0 1200 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     {{-- Radial glow gradient: bright center fading out --}}
                     <radialGradient id="blobGlow1" cx="28%" cy="22%" r="48%" gradientUnits="userSpaceOnUse">
@@ -129,14 +130,117 @@
                 <circle cx="340" cy="700" r="2" fill="white" fill-opacity="0.06"/>
                 <circle cx="600" cy="780" r="2.5" fill="white" fill-opacity="0.05"/>
             </svg>
+
+            {{-- Mobile & Tablet SVG Blob (Screens below lg) --}}
+            <svg class="block lg:hidden absolute left-0 top-0 w-full h-full" viewBox="0 0 540 960" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="mobileBlobFill" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%"   stop-color="#2563EB" stop-opacity="0.95"/>
+                        <stop offset="50%"  stop-color="#1D4ED8" stop-opacity="0.9"/>
+                        <stop offset="100%" stop-color="#1E40AF" stop-opacity="0.85"/>
+                    </linearGradient>
+                    <radialGradient id="mobileBlobGlow1" cx="35%" cy="18%" r="52%" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"   stop-color="#60A5FA" stop-opacity="0.32"/>
+                        <stop offset="55%"  stop-color="#2563EB" stop-opacity="0.14"/>
+                        <stop offset="100%" stop-color="#1E40AF" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="mobileBlobGlow2" cx="68%" cy="76%" r="48%" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"   stop-color="#38BDF8" stop-opacity="0.25"/>
+                        <stop offset="60%"  stop-color="#1D4ED8" stop-opacity="0.08"/>
+                        <stop offset="100%" stop-color="#1E40AF" stop-opacity="0"/>
+                    </radialGradient>
+                    <linearGradient id="mobileTopSheen" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%"   stop-color="white" stop-opacity="0.18"/>
+                        <stop offset="70%"  stop-color="white" stop-opacity="0.05"/>
+                        <stop offset="100%" stop-color="white" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+
+                {{-- ① Mobile Organic Blob Main Fill --}}
+                <path d="
+                    M0,0
+                    L390,0
+                    C450,0 510,45 500,130
+                    C490,215 410,270 440,360
+                    C470,450 530,500 515,600
+                    C500,700 410,760 435,845
+                    C450,905 395,955 300,960
+                    L0,960
+                    Z
+                " fill="url(#mobileBlobFill)"/>
+
+                {{-- ② Primary Ambient Radial Spotlight --}}
+                <path d="
+                    M0,0
+                    L390,0
+                    C450,0 510,45 500,130
+                    C490,215 410,270 440,360
+                    C470,450 530,500 515,600
+                    C500,700 410,760 435,845
+                    C450,905 395,955 300,960
+                    L0,960
+                    Z
+                " fill="url(#mobileBlobGlow1)"/>
+
+                {{-- ③ Secondary Lower Radial Accent --}}
+                <path d="
+                    M0,0
+                    L390,0
+                    C450,0 510,45 500,130
+                    C490,215 410,270 440,360
+                    C470,450 530,500 515,600
+                    C500,700 410,760 435,845
+                    C450,905 395,955 300,960
+                    L0,960
+                    Z
+                " fill="url(#mobileBlobGlow2)"/>
+
+                {{-- ④ Top-left soft highlight ellipse --}}
+                <ellipse cx="140" cy="110" rx="220" ry="90" fill="white" fill-opacity="0.06" transform="rotate(-10 140 110)"/>
+
+                {{-- ⑤ Inner pearl glow accent --}}
+                <ellipse cx="70" cy="45" rx="90" ry="35" fill="white" fill-opacity="0.1" transform="rotate(-6 70 45)"/>
+
+                {{-- ⑥ Mid soft glow circle --}}
+                <circle cx="430" cy="380" r="130" fill="white" fill-opacity="0.035"/>
+
+                {{-- ⑦ Bottom subtle lift --}}
+                <ellipse cx="220" cy="880" rx="190" ry="60" fill="white" fill-opacity="0.04"/>
+
+                {{-- ⑧ Top-edge sheen strip --}}
+                <rect x="0" y="0" width="450" height="4" fill="url(#mobileTopSheen)"/>
+
+                {{-- ⑨ Flowing luminous shimmer arc along the boundary --}}
+                <path d="
+                    M390,0
+                    C450,0 510,45 500,130
+                    C490,215 410,270 440,360
+                    C470,450 530,500 515,600
+                    C500,700 410,760 435,845
+                    C450,905 395,955 300,960
+                " fill="none" stroke="white" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"/>
+
+                {{-- ⑩ Offset inner depth echo arc for 3D glassy realism --}}
+                <path d="
+                    M376,8
+                    C434,8 488,48 478,126
+                    C468,204 394,264 422,352
+                    C452,440 508,490 494,588
+                    C480,686 394,746 418,836
+                    C432,894 380,942 288,950
+                " fill="none" stroke="white" stroke-opacity="0.075" stroke-width="1.2" stroke-linecap="round"/>
+
+                {{-- ⑪ Delicate floating micro-dots for modern tech elegance --}}
+                <circle cx="90"  cy="180" r="2.5" fill="white" fill-opacity="0.22"/>
+                <circle cx="210" cy="80"  r="1.5" fill="white" fill-opacity="0.2"/>
+                <circle cx="340" cy="150" r="2"   fill="#38BDF8" fill-opacity="0.28"/>
+                <circle cx="460" cy="280" r="2.5" fill="white" fill-opacity="0.18"/>
+                <circle cx="120" cy="460" r="2"   fill="white" fill-opacity="0.16"/>
+                <circle cx="390" cy="620" r="2.5" fill="#38BDF8" fill-opacity="0.25"/>
+                <circle cx="270" cy="800" r="1.5" fill="white" fill-opacity="0.18"/>
+            </svg>
         </div>
 
-        {{-- Mobile background gradient (lighter blobs on dark) --}}
-        <div class="absolute inset-0 z-0 lg:hidden pointer-events-none" aria-hidden="true">
-            <div class="absolute inset-0 bg-gradient-to-br from-primary-deep/50 via-primary/30 to-[#1E40AF]/50"></div>
-            <div class="absolute top-0 left-1/4 w-72 h-72 rounded-full bg-sky-400/20 blur-3xl"></div>
-            <div class="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-primary/20 blur-3xl"></div>
-        </div>
 
         {{-- Main Container --}}
         <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8">
