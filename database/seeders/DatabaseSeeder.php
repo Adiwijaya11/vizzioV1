@@ -595,6 +595,15 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        // 11. Seed Engineering Technologies
+        $this->call(TechnologySeeder::class);
+
+        // 12. Seed Corporate Partners & Clients
+        $this->call(PartnerSeeder::class);
+
+        // 13. Seed Engineering Tips & Playbooks
+        $this->call(TipSeeder::class);
     }
 }
 

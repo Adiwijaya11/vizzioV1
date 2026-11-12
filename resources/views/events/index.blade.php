@@ -4,12 +4,200 @@
 @section('meta_description', 'Jadwal event, workshop, seminar, dan meetup teknologi terkini dari VizzioCraft.')
 
 @section('content')
+@php
+    $typeLabels = [
+        'workshop'  => ['label' => 'Workshop'],
+        'webinar'   => ['label' => 'Webinar'],
+        'seminar'   => ['label' => 'Seminar'],
+        'meetup'    => ['label' => 'Meetup'],
+        'bootcamp'  => ['label' => 'Bootcamp'],
+        'hackathon' => ['label' => 'Hackathon'],
+        'talk'      => ['label' => 'Tech Talk'],
+    ];
+
+    $formats = [
+        ''        => ['type' => 'all',     'id' => 'Semua Format', 'en' => 'All Formats'],
+        'offline' => ['type' => 'offline', 'id' => 'Offline',       'en' => 'In-Person'],
+        'online'  => ['type' => 'online',  'id' => 'Online',        'en' => 'Online'],
+        'hybrid'  => ['type' => 'hybrid',  'id' => 'Hybrid',        'en' => 'Hybrid'],
+    ];
+
+    $prices = [
+        ''     => ['type' => 'all',  'id' => 'Semua', 'en' => 'All'],
+        'free' => ['type' => 'free', 'id' => 'Gratis', 'en' => 'Free'],
+        'paid' => ['type' => 'paid', 'id' => 'Berbayar', 'en' => 'Paid'],
+    ];
+
+    $statuses = [
+        ''         => ['type' => 'all',      'id' => 'Semua',        'en' => 'All'],
+        'upcoming' => ['type' => 'upcoming', 'id' => 'Akan Datang',  'en' => 'Upcoming'],
+        'past'     => ['type' => 'past',     'id' => 'Selesai',      'en' => 'Past'],
+    ];
+
+    $activeCount = 0;
+    if (request('type')) $activeCount++;
+    if (request('format')) $activeCount++;
+    if (request('price')) $activeCount++;
+    if (request('status')) $activeCount++;
+    if (request('q')) $activeCount++;
+@endphp
+
 <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+
+    {{-- Mobile Filter Bar (Only visible on screens < lg) --}}
+    <div class="lg:hidden mb-6 space-y-3">
+        <div class="flex items-center gap-2">
+            <form method="GET" action="/events" class="relative flex-1">
+                @foreach(request()->except(['q','page']) as $key => $val)
+                    <input type="hidden" name="{{ $key }}" value="{{ $val }}">
+                @endforeach
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request('q') }}"
+                    placeholder="Cari event..."
+                    class="w-full rounded-xl border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder-ink-muted/50 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                >
+                <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg>
+            </form>
+            <button
+                type="button"
+                id="open-event-filters-btn"
+                class="inline-flex items-center gap-2 rounded-xl border border-border bg-white px-3.5 py-2.5 text-sm font-semibold text-ink shadow-sm hover:bg-muted/60 transition-colors focus:outline-none shrink-0"
+                aria-label="Buka Filter Event"
+            >
+                <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <span>Filter</span>
+                @if($activeCount > 0)
+                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-white">
+                        {{ $activeCount }}
+                    </span>
+                @endif
+            </button>
+        </div>
+
+        {{-- Horizontal Quick Scroll for Types on Mobile --}}
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+            <a href="/events{{ request()->except(['type','page']) ? '?' . http_build_query(request()->except(['type','page'])) : '' }}"
+               class="shrink-0 rounded-full px-3 py-1.5 font-medium transition-colors {{ !request('type') ? 'bg-primary text-white shadow-sm' : 'border border-border bg-white text-ink-muted hover:bg-muted hover:text-ink' }}">
+                Semua Tipe
+            </a>
+            @foreach($types as $type)
+                @php $tl = $typeLabels[$type] ?? ['label' => ucfirst($type)]; @endphp
+                <a href="/events?{{ http_build_query(array_merge(request()->except(['type','page']), ['type' => $type])) }}"
+                   class="shrink-0 rounded-full px-3 py-1.5 font-medium transition-colors {{ request('type') === $type ? 'bg-primary text-white shadow-sm' : 'border border-border bg-white text-ink-muted hover:bg-muted hover:text-ink' }}">
+                    {{ $tl['label'] }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Mobile Filter Drawer (Offcanvas) --}}
+    <div id="mobile-filter-drawer" class="fixed inset-0 z-50 hidden lg:hidden" aria-modal="true" role="dialog">
+        {{-- Backdrop --}}
+        <div id="mobile-filter-backdrop" class="fixed inset-0 bg-ink/50 backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
+
+        {{-- Slide-over Panel --}}
+        <div class="fixed inset-y-0 right-0 flex max-w-full pl-8 z-10">
+            <div id="mobile-filter-content" class="w-screen max-w-sm transform translate-x-full transition-transform ease-out duration-300 bg-white shadow-2xl flex flex-col h-full">
+                {{-- Header --}}
+                <div class="flex items-center justify-between border-b border-border px-5 py-4 bg-muted/20">
+                    <div class="flex items-center gap-2">
+                        <svg class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        <h2 class="text-base font-bold text-ink">Filter Event</h2>
+                        @if($activeCount > 0)
+                            <span class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+                                {{ $activeCount }} aktif
+                            </span>
+                        @endif
+                    </div>
+                    <button type="button" id="close-event-filters-btn" class="rounded-lg p-1.5 text-ink-muted hover:bg-muted hover:text-ink transition-colors" aria-label="Tutup Filter">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                {{-- Scrollable Filter Content --}}
+                <div class="flex-1 overflow-y-auto p-5 space-y-6">
+                    {{-- Tipe Event --}}
+                    <div>
+                        <h3 class="mb-2.5 text-xs font-bold uppercase tracking-widest text-ink-muted">Tipe Event</h3>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <a href="/events{{ request()->except(['type','page']) ? '?' . http_build_query(request()->except(['type','page'])) : '' }}"
+                               class="flex items-center justify-center rounded-lg px-3 py-2 text-xs font-medium transition-colors text-center {{ !request('type') ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
+                                <span>Semua Tipe</span>
+                            </a>
+                            @foreach($types as $type)
+                                @php $tl = $typeLabels[$type] ?? ['label' => ucfirst($type)]; @endphp
+                                <a href="/events?{{ http_build_query(array_merge(request()->except(['type','page']), ['type' => $type])) }}"
+                                   class="flex items-center justify-center rounded-lg px-3 py-2 text-xs font-medium transition-colors text-center {{ request('type') === $type ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
+                                    <span>{{ $tl['label'] }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Format --}}
+                    <div>
+                        <h3 class="mb-2.5 text-xs font-bold uppercase tracking-widest text-ink-muted">Format</h3>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            @foreach($formats as $fKey => $fVal)
+                                <a href="/events?{{ http_build_query(array_merge(request()->except(['format','page']), $fKey ? ['format' => $fKey] : [])) }}"
+                                   class="flex items-center justify-center rounded-lg px-3 py-2 text-xs font-medium transition-colors text-center {{ request('format') === ($fKey ?: null) && ($fKey || !request('format')) ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
+                                    <span>{{ $fVal['id'] }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Harga --}}
+                    <div>
+                        <h3 class="mb-2.5 text-xs font-bold uppercase tracking-widest text-ink-muted">Harga</h3>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            @foreach($prices as $pKey => $pVal)
+                                <a href="/events?{{ http_build_query(array_merge(request()->except(['price','page']), $pKey ? ['price' => $pKey] : [])) }}"
+                                   class="flex items-center justify-center rounded-lg px-2.5 py-2 text-xs font-medium transition-colors text-center {{ request('price') === ($pKey ?: null) && ($pKey || !request('price')) ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
+                                    <span>{{ $pVal['id'] }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Status --}}
+                    <div>
+                        <h3 class="mb-2.5 text-xs font-bold uppercase tracking-widest text-ink-muted">Status</h3>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            @foreach($statuses as $sKey => $sVal)
+                                <a href="/events?{{ http_build_query(array_merge(request()->except(['status','page']), $sKey ? ['status' => $sKey] : [])) }}"
+                                   class="flex items-center justify-center rounded-lg px-2 py-2 text-xs font-medium transition-colors text-center {{ request('status') === ($sKey ?: null) && ($sKey || !request('status')) ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
+                                    <span>{{ $sVal['id'] }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Footer Actions --}}
+                <div class="border-t border-border p-4 bg-muted/20 flex items-center gap-3">
+                    <a href="/events" class="flex-1 text-center rounded-xl border border-border bg-white py-2.5 text-xs font-semibold text-ink hover:bg-muted transition-colors">
+                        Reset Filter
+                    </a>
+                    <button type="button" id="apply-event-filters-btn" class="flex-1 rounded-xl bg-primary py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-primary-dark transition-colors">
+                        Lihat Hasil
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="flex flex-col gap-8 lg:flex-row">
 
-        {{-- Sidebar Filter --}}
-        <aside class="w-full shrink-0 lg:w-64 xl:w-72">
-            <div class="lg:sticky lg:top-24 space-y-5">
+        {{-- Desktop Sidebar Filter (Hidden on screens < lg) --}}
+        <aside class="hidden lg:block w-64 xl:w-72 shrink-0">
+            <div class="sticky top-24 space-y-5">
 
                 {{-- Search --}}
                 <form method="GET" action="/events" class="relative">
@@ -33,17 +221,6 @@
                         <span data-lang-en class="hidden">Event Type</span>
                     </h3>
                     <div class="space-y-1">
-                        @php
-                            $typeLabels = [
-                                'workshop'  => ['label' => 'Workshop'],
-                                'webinar'   => ['label' => 'Webinar'],
-                                'seminar'   => ['label' => 'Seminar'],
-                                'meetup'    => ['label' => 'Meetup'],
-                                'bootcamp'  => ['label' => 'Bootcamp'],
-                                'hackathon' => ['label' => 'Hackathon'],
-                                'talk'      => ['label' => 'Tech Talk'],
-                            ];
-                        @endphp
                         <a href="/events{{ request()->except(['type','page']) ? '?' . http_build_query(request()->except(['type','page'])) : '' }}"
                            class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ !request('type') ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
                             <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
@@ -89,14 +266,6 @@
                 <div class="rounded-2xl border border-border bg-white p-4 shadow-sm">
                     <h3 class="mb-3 text-xs font-bold uppercase tracking-widest text-ink-muted">Format</h3>
                     <div class="space-y-1">
-                        @php
-                            $formats = [
-                                ''        => ['type' => 'all',     'id' => 'Semua Format', 'en' => 'All Formats'],
-                                'offline' => ['type' => 'offline', 'id' => 'Offline',       'en' => 'In-Person'],
-                                'online'  => ['type' => 'online',  'id' => 'Online',        'en' => 'Online'],
-                                'hybrid'  => ['type' => 'hybrid',  'id' => 'Hybrid',        'en' => 'Hybrid'],
-                            ];
-                        @endphp
                         @foreach($formats as $fKey => $fVal)
                             <a href="/events?{{ http_build_query(array_merge(request()->except(['format','page']), $fKey ? ['format' => $fKey] : [])) }}"
                                class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request('format') === ($fKey ?: null) && ($fKey || !request('format')) ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
@@ -128,13 +297,6 @@
                         <span data-lang-en class="hidden">Price</span>
                     </h3>
                     <div class="space-y-1">
-                        @php
-                            $prices = [
-                                ''     => ['type' => 'all',  'id' => 'Semua', 'en' => 'All'],
-                                'free' => ['type' => 'free', 'id' => 'Gratis', 'en' => 'Free'],
-                                'paid' => ['type' => 'paid', 'id' => 'Berbayar', 'en' => 'Paid'],
-                            ];
-                        @endphp
                         @foreach($prices as $pKey => $pVal)
                             <a href="/events?{{ http_build_query(array_merge(request()->except(['price','page']), $pKey ? ['price' => $pKey] : [])) }}"
                                class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request('price') === ($pKey ?: null) && ($pKey || !request('price')) ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
@@ -160,13 +322,6 @@
                 <div class="rounded-2xl border border-border bg-white p-4 shadow-sm">
                     <h3 class="mb-3 text-xs font-bold uppercase tracking-widest text-ink-muted">Status</h3>
                     <div class="space-y-1">
-                        @php
-                            $statuses = [
-                                ''         => ['type' => 'all',      'id' => 'Semua',        'en' => 'All'],
-                                'upcoming' => ['type' => 'upcoming', 'id' => 'Akan Datang',  'en' => 'Upcoming'],
-                                'past'     => ['type' => 'past',     'id' => 'Selesai',      'en' => 'Past'],
-                            ];
-                        @endphp
                         @foreach($statuses as $sKey => $sVal)
                             <a href="/events?{{ http_build_query(array_merge(request()->except(['status','page']), $sKey ? ['status' => $sKey] : [])) }}"
                                class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request('status') === ($sKey ?: null) && ($sKey || !request('status')) ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
@@ -187,6 +342,15 @@
                         @endforeach
                     </div>
                 </div>
+
+                @if($activeCount > 0)
+                <div class="pt-1 text-center">
+                    <a href="/events" class="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline">
+                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        <span>Reset Semua Filter ({{ $activeCount }})</span>
+                    </a>
+                </div>
+                @endif
 
             </div>
         </aside>
@@ -416,5 +580,51 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const drawer = document.getElementById('mobile-filter-drawer');
+    const backdrop = document.getElementById('mobile-filter-backdrop');
+    const content = document.getElementById('mobile-filter-content');
+    const openBtn = document.getElementById('open-event-filters-btn');
+    const closeBtn = document.getElementById('close-event-filters-btn');
+    const applyBtn = document.getElementById('apply-event-filters-btn');
+
+    if (!drawer || !openBtn) return;
+
+    function openDrawer() {
+        drawer.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        requestAnimationFrame(() => {
+            backdrop.classList.remove('opacity-0');
+            backdrop.classList.add('opacity-100');
+            content.classList.remove('translate-x-full');
+            content.classList.add('translate-x-0');
+        });
+    }
+
+    function closeDrawer() {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+        content.classList.remove('translate-x-0');
+        content.classList.add('translate-x-full');
+        document.body.classList.remove('overflow-hidden');
+        setTimeout(() => {
+            drawer.classList.add('hidden');
+        }, 300);
+    }
+
+    openBtn.addEventListener('click', openDrawer);
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if (backdrop) backdrop.addEventListener('click', closeDrawer);
+    if (applyBtn) applyBtn.addEventListener('click', closeDrawer);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !drawer.classList.contains('hidden')) {
+            closeDrawer();
+        }
+    });
+});
+</script>
 @endsection
 

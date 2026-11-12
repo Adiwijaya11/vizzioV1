@@ -1,16 +1,16 @@
 @props([
     'eyebrowId' => 'MULAI SEKARANG',
     'eyebrowEn' => 'GET STARTED',
-    'titleId',
-    'titleEn',
-    'descId',
-    'descEn',
-    'primaryHref' => '/#contact',
+    'titleId' => 'Siap Membangun Solusi Digital Bersama VizzioCraft?',
+    'titleEn' => 'Ready to Build Digital Solutions with VizzioCraft?',
+    'descId' => 'Diskusikan kebutuhan arsitektur, estimasi biaya, dan jadwal eksekusi proyek Anda bersama tim engineer kami secara gratis.',
+    'descEn' => 'Discuss your architecture needs, cost estimates, and project execution timeline with our engineering team for free.',
+    'primaryHref' => '/contact',
     'primaryId' => 'Hubungi Kami Sekarang',
     'primaryEn' => 'Contact Us Now',
-    'secondaryHref' => '/about/approach',
-    'secondaryId' => 'Pelajari Pendekatan Kami',
-    'secondaryEn' => 'Learn Our Approach',
+    'secondaryHref' => '/services',
+    'secondaryId' => 'Jelajahi Layanan Kami',
+    'secondaryEn' => 'Explore Our Services',
 ])
 
 <section {{ $attributes->merge(['class' => 'relative overflow-hidden py-20 sm:py-24']) }}>

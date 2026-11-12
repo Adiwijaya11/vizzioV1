@@ -51,31 +51,49 @@ html.is-open-nav, body.is-open-nav {
 .goog-te-balloon-frame,
 #goog-gt-tt,
 .goog-te-spinner-pos,
+.goog-te-spinner,
 .VIpgJd-yDufZb-O2bfZe,
 .VIpgJd-yDufZb-e2F3ed,
 .VIpgJd-yDufZb-Lg26de,
 .VIpgJd-yDufZb-Mtb2mc,
 .VIpgJd-yDufZb-SmV21e,
 .VIpgJd-yDufZb-s2g2ed,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-aZ2wEe-OiiCO,
+.VIpgJd-ZVi9od-xl07Ob-lTBxed,
+[id^=":1."],
+[id^=":2."],
 iframe.skiptranslate,
+iframe.goog-te-banner-frame,
 iframe[id*="google_translate"],
+.goog-te-gadget,
 .goog-te-gadget-icon,
-.goog-te-gadget-simple {
+.goog-te-gadget-simple,
+#google_translate_element {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
     width: 0 !important;
     height: 0 !important;
+    max-height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
 }
 
-body {
+html, body {
     top: 0px !important;
     position: static !important;
 }
 
+body > .skiptranslate {
+    display: none !important;
+}
+
 .goog-tooltip,
 .goog-tooltip:hover,
+#goog-gt-tt,
 #goog-gt-tt * {
     display: none !important;
     visibility: hidden !important;
@@ -87,6 +105,38 @@ font[style] {
     background-color: transparent !important;
     box-shadow: none !important;
     border: none !important;
+}
+
+/* Discreet VizzioCraft Translation Indicator */
+#vizzio-translate-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2.5px;
+    z-index: 99999;
+    background: linear-gradient(90deg, #2563EB, #38BDF8, #60A5FA);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease, opacity 0.3s ease;
+    pointer-events: none;
+}
+#vizzio-translate-bar.is-active {
+    transform: scaleX(1);
+}
+
+/* Hide scrollbar UI while preserving smooth scrollability */
+.lang-dropdown-scroll {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+.lang-dropdown-scroll::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 /* Touch target utility - 44px minimum for accessibility */

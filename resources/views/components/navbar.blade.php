@@ -25,7 +25,7 @@
         ],
         [
             'label' => ['id' => 'Proyek', 'en' => 'Projects'],
-            'href'  => '/#projects',
+            'href'  => '/projects',
             'intro' => [
                 'title' => ['id' => 'Karya pilihan', 'en' => 'Selected work'],
                 'text'  => ['id' => 'Cuplikan project yang menunjukkan cara kami menyelesaikan masalah bisnis nyata.',
@@ -33,9 +33,9 @@
                 'cta'   => ['id' => 'Lihat proyek',  'en' => 'See projects'],
             ],
             'items' => [
-                ['label' => ['id' => 'Platform Produk',  'en' => 'Product Platforms'], 'desc' => ['id' => 'Aplikasi yang dipakai tim dan pelanggan setiap hari.', 'en' => 'Apps used by teams and customers daily.'],         'href' => '/#projects'],
-                ['label' => ['id' => 'Situs Perusahaan', 'en' => 'Company Sites'],     'desc' => ['id' => 'Profil perusahaan yang jelas, cepat, dan SEO-ready.',  'en' => 'Clear, fast, and SEO-ready company profiles.'],    'href' => '/#projects'],
-                ['label' => ['id' => 'Alat Internal',    'en' => 'Internal Tools'],    'desc' => ['id' => 'Dashboard dan workflow untuk operasional.',             'en' => 'Dashboards and workflows for operations.'],         'href' => '/#projects'],
+                ['label' => ['id' => 'Platform Produk',  'en' => 'Product Platforms'], 'desc' => ['id' => 'Aplikasi yang dipakai tim dan pelanggan setiap hari.', 'en' => 'Apps used by teams and customers daily.'],         'href' => '/projects'],
+                ['label' => ['id' => 'Situs Perusahaan', 'en' => 'Company Sites'],     'desc' => ['id' => 'Profil perusahaan yang jelas, cepat, dan SEO-ready.',  'en' => 'Clear, fast, and SEO-ready company profiles.'],    'href' => '/projects'],
+                ['label' => ['id' => 'Alat Internal',    'en' => 'Internal Tools'],    'desc' => ['id' => 'Dashboard dan workflow untuk operasional.',             'en' => 'Dashboards and workflows for operations.'],         'href' => '/projects'],
             ],
         ],
         [
@@ -50,6 +50,19 @@
             'label' => ['id' => 'Kontak', 'en' => 'Contact'],
             'href'  => '/contact',
         ],
+    ];
+
+    $languages = [
+        ['code' => 'id',    'name' => 'Bahasa Indonesia', 'short' => 'ID', 'country' => 'Indonesia', 'flag' => 'id'],
+        ['code' => 'en',    'name' => 'English',          'short' => 'EN', 'country' => 'Global',    'flag' => 'gb'],
+        ['code' => 'ja',    'name' => '日本語',            'short' => 'JA', 'country' => 'Japan',     'flag' => 'jp'],
+        ['code' => 'ko',    'name' => '한국어',            'short' => 'KO', 'country' => 'Korea',     'flag' => 'kr'],
+        ['code' => 'zh-CN', 'name' => '中文 (简体)',      'short' => 'ZH', 'country' => 'China',     'flag' => 'cn'],
+        ['code' => 'ar',    'name' => 'العربية',          'short' => 'AR', 'country' => 'Arabic',    'flag' => 'sa'],
+        ['code' => 'de',    'name' => 'Deutsch',          'short' => 'DE', 'country' => 'Germany',   'flag' => 'de'],
+        ['code' => 'fr',    'name' => 'Français',         'short' => 'FR', 'country' => 'France',    'flag' => 'fr'],
+        ['code' => 'es',    'name' => 'Español',          'short' => 'ES', 'country' => 'Spain',     'flag' => 'es'],
+        ['code' => 'ru',    'name' => 'Русский',          'short' => 'RU', 'country' => 'Russia',    'flag' => 'ru'],
     ];
 @endphp
 
@@ -136,20 +149,61 @@
             @endforeach
         </ul>
 
-        {{-- Desktop Right: Lang Switcher + CTA --}}
+        {{-- Desktop Right: Lang Switcher Dropdown + CTA --}}
         <div class="hidden lg:flex items-center gap-2.5">
-            {{-- Language Switcher --}}
-            <button
-                id="lang-switcher"
-                type="button"
-                aria-label="Ganti bahasa / Switch language"
-                class="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/50 px-3 py-1.5 text-[11px] font-bold text-ink-muted tracking-wide transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 hover:text-primary select-none cursor-pointer"
-            >
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                </svg>
-                <span id="lang-label">ID</span>
-            </button>
+            {{-- Language Switcher Dropdown --}}
+            <div class="relative" id="lang-dropdown-wrapper" data-lenis-prevent>
+                <button
+                    id="lang-dropdown-btn"
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    class="inline-flex items-center gap-2 rounded-xl border border-border/80 bg-muted/40 px-3 py-1.5 text-xs font-semibold text-ink hover:border-primary/40 hover:bg-white hover:shadow-xs transition-all duration-200 cursor-pointer select-none"
+                    title="Ganti Bahasa / Switch Language"
+                >
+                    <span id="current-lang-flag" class="shrink-0 flex items-center">
+                        <x-flag-icon code="id" class="w-4.5 h-3" />
+                    </span>
+                    <span id="current-lang-code" class="text-[11px] font-bold tracking-wide text-ink">ID</span>
+                    <svg id="lang-chevron" class="h-3 w-3 text-ink-muted/70 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                {{-- Desktop Dropdown Menu --}}
+                <div
+                    id="lang-dropdown-menu"
+                    data-lenis-prevent
+                    class="invisible opacity-0 scale-95 origin-top-right absolute right-0 top-full mt-2 w-72 rounded-2xl border border-border/80 bg-white/98 backdrop-blur-xl p-2 shadow-[0_20px_50px_rgba(15,23,42,0.14)] z-50 transition-all duration-200"
+                >
+                    <div class="px-3 py-2 border-b border-border/50 mb-1 flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-ink-muted">Pilih Bahasa</span>
+                        <span class="text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">10 Bahasa</span>
+                    </div>
+                    <div data-lenis-prevent class="lang-dropdown-scroll max-h-64 overflow-y-auto space-y-0.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden overscroll-contain" style="scrollbar-width: none; -ms-overflow-style: none;">
+                        @foreach($languages as $l)
+                            <button
+                                type="button"
+                                data-lang-code="{{ $l['code'] }}"
+                                data-lang-short="{{ $l['short'] }}"
+                                data-lang-flag="{{ $l['flag'] }}"
+                                class="lang-option-btn w-full flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl text-left text-xs transition-colors hover:bg-primary/5 hover:text-primary group/lang cursor-pointer"
+                            >
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <x-flag-icon code="{{ $l['flag'] }}" class="w-5 h-3.5" />
+                                    <div class="min-w-0">
+                                        <p class="font-medium text-ink group-hover/lang:text-primary truncate">{{ $l['name'] }}</p>
+                                        <p class="text-[10px] text-ink-muted leading-tight">{{ $l['country'] }}</p>
+                                    </div>
+                                </div>
+                                <span class="lang-check-icon hidden text-primary shrink-0" data-check-code="{{ $l['code'] }}">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
 
             {{-- WA Quick Button --}}
             <a href="https://wa.me/6283114592416" target="_blank" rel="noopener noreferrer"
@@ -172,17 +226,59 @@
 
         {{-- Mobile: Lang Switcher + Hamburger --}}
         <div class="flex items-center gap-2 lg:hidden">
-            <button
-                id="lang-switcher-mobile"
-                type="button"
-                aria-label="Ganti bahasa"
-                class="inline-flex items-center gap-1 rounded-lg border border-border/80 bg-muted/50 px-2.5 py-1.5 text-[11px] font-bold text-ink-muted hover:border-primary/40 hover:bg-primary/5 hover:text-primary select-none cursor-pointer transition-colors"
-            >
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                </svg>
-                <span id="lang-label-mobile">ID</span>
-            </button>
+            {{-- Language Selector (Mobile Dropdown) --}}
+            <div class="relative" id="lang-dropdown-mobile-wrapper" data-lenis-prevent>
+                <button
+                    id="lang-dropdown-mobile-btn"
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    class="inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-muted/40 px-2.5 py-1.5 text-xs font-semibold text-ink hover:border-primary/40 hover:bg-white transition-all cursor-pointer select-none"
+                    aria-label="Pilih Bahasa"
+                >
+                    <span id="current-lang-mobile-flag" class="shrink-0 flex items-center">
+                        <x-flag-icon code="id" class="w-4 h-2.5" />
+                    </span>
+                    <span id="current-lang-mobile-code" class="text-[11px] font-bold">ID</span>
+                    <svg id="lang-mobile-chevron" class="h-3 w-3 text-ink-muted/70 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                {{-- Mobile Dropdown Menu --}}
+                <div
+                    id="lang-dropdown-mobile-menu"
+                    data-lenis-prevent
+                    class="invisible opacity-0 scale-95 origin-top-right absolute right-0 top-full mt-2 w-64 rounded-2xl border border-border/80 bg-white/98 backdrop-blur-xl p-2 shadow-[0_20px_50px_rgba(15,23,42,0.18)] z-50 transition-all duration-200"
+                >
+                    <div class="px-2.5 py-1.5 border-b border-border/50 mb-1 flex items-center justify-between">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-ink-muted">Pilih Bahasa</span>
+                        <span class="text-[9px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">10 Bahasa</span>
+                    </div>
+                    <div data-lenis-prevent class="lang-dropdown-scroll max-h-60 overflow-y-auto space-y-0.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden overscroll-contain" style="scrollbar-width: none; -ms-overflow-style: none;">
+                        @foreach($languages as $l)
+                            <button
+                                type="button"
+                                data-lang-code="{{ $l['code'] }}"
+                                data-lang-short="{{ $l['short'] }}"
+                                data-lang-flag="{{ $l['flag'] }}"
+                                class="lang-option-btn w-full flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl text-left text-xs transition-colors hover:bg-primary/5 hover:text-primary group/lang cursor-pointer"
+                            >
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <x-flag-icon code="{{ $l['flag'] }}" class="w-4.5 h-3" />
+                                    <div class="min-w-0">
+                                        <p class="font-medium text-ink group-hover/lang:text-primary truncate text-[12px]">{{ $l['name'] }}</p>
+                                        <p class="text-[9px] text-ink-muted leading-none">{{ $l['country'] }}</p>
+                                    </div>
+                                </div>
+                                <span class="lang-check-icon hidden text-primary shrink-0" data-check-code="{{ $l['code'] }}">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
             <button
                 type="button"
                 id="mobile-nav-toggle-btn"
@@ -227,30 +323,34 @@
                 <nav id="subnav-scroll-container" class="flex-1 flex items-center gap-1 overflow-x-auto py-2 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-pan-x" aria-label="Kategori konten" role="navigation">
                     @php
                         $categories = [
-                            ['key' => 'all',      'slug' => 'semua',      'label' => ['id' => 'Semua',     'en' => 'All'],      'href' => '/news',                     'icon' => 'grid'],
-                            ['key' => 'company',  'slug' => 'perusahaan', 'label' => ['id' => 'Perusahaan','en' => 'Company'],  'href' => '/news/category/perusahaan', 'icon' => 'building'],
-                            ['key' => 'project',  'slug' => 'proyek',     'label' => ['id' => 'Proyek',    'en' => 'Project'],  'href' => '/news/category/proyek',     'icon' => 'folder'],
-                            ['key' => 'event',    'slug' => 'event',      'label' => ['id' => 'Event',     'en' => 'Event'],    'href' => '/events',                   'icon' => 'calendar'],
-                            ['key' => 'tech',     'slug' => 'teknologi',  'label' => ['id' => 'Teknologi', 'en' => 'Tech'],     'href' => '/news/category/teknologi',  'icon' => 'cpu'],
-                            ['key' => 'tips',     'slug' => 'tips',       'label' => ['id' => 'Tips',      'en' => 'Tips'],     'href' => '/news/category/tips',       'icon' => 'lightbulb'],
-                            ['key' => 'industry', 'slug' => 'industri',   'label' => ['id' => 'Industri',  'en' => 'Industry'], 'href' => '/news/category/industri',  'icon' => 'briefcase'],
+                            ['key' => 'company',  'slug' => 'perusahaan', 'label' => ['id' => 'Perusahaan','en' => 'Company'],  'href' => '/about/company', 'icon' => 'building'],
+                            ['key' => 'project',  'slug' => 'proyek',     'label' => ['id' => 'Proyek',    'en' => 'Project'],  'href' => '/projects',      'icon' => 'folder'],
+                            ['key' => 'event',    'slug' => 'event',      'label' => ['id' => 'Event',     'en' => 'Event'],    'href' => '/events',        'icon' => 'calendar'],
+                            ['key' => 'tech',     'slug' => 'teknologi',  'label' => ['id' => 'Teknologi', 'en' => 'Tech'],     'href' => '/technology',    'icon' => 'cpu'],
+                            ['key' => 'tips',     'slug' => 'tips',       'label' => ['id' => 'Tips',      'en' => 'Tips'],     'href' => '/tips',          'icon' => 'lightbulb'],
+                            ['key' => 'industry', 'slug' => 'industri',   'label' => ['id' => 'Partner & Klien', 'en' => 'Partner & Client'], 'href' => '/industries', 'icon' => 'briefcase'],
                         ];
 
                         $activeCategoryNav = null;
-                        if (request()->is('events*')) {
+                        if (request()->is('about/company*') || request()->is('company*') || request()->is('perusahaan*')) {
+                            $activeCategoryNav = 'company';
+                        } elseif (request()->is('projects*') || request()->is('proyek*')) {
+                            $activeCategoryNav = 'project';
+                        } elseif (request()->is('events*')) {
                             $activeCategoryNav = 'event';
-                        } elseif (request()->is('news')) {
-                            $qCat = request()->query('category');
-                            $activeCategoryNav = $qCat ? strtolower($qCat) : 'all';
-                        } elseif (request()->is('news/category/*')) {
-                            $activeCategoryNav = strtolower(request()->segment(3));
+                        } elseif (request()->is('technology*') || request()->is('teknologi*')) {
+                            $activeCategoryNav = 'tech';
+                        } elseif (request()->is('tips*')) {
+                            $activeCategoryNav = 'tips';
+                        } elseif (request()->is('industries*') || request()->is('industri*') || request()->is('partners*') || request()->is('klien*') || request()->is('mitra*')) {
+                            $activeCategoryNav = 'industry';
                         }
                     @endphp
                     @foreach ($categories as $cat)
                         @php
                             $isActive = false;
                             if ($activeCategoryNav) {
-                                $isActive = ($activeCategoryNav === $cat['key'] || $activeCategoryNav === $cat['slug'] || ($cat['key'] === 'all' && ($activeCategoryNav === 'all' || $activeCategoryNav === 'semua')));
+                                $isActive = ($activeCategoryNav === $cat['key'] || $activeCategoryNav === $cat['slug']);
                             }
                             $activeClass = $isActive
                                 ? 'bg-primary text-white shadow-[0_2px_8px_rgba(37,99,235,.3)]'
@@ -420,16 +520,19 @@
     })();
     </script>
 
+    {{-- Discreet Top Translation Bar --}}
+    <div id="vizzio-translate-bar" aria-hidden="true"></div>
+
     {{-- Hidden Google Translate Element --}}
     <div id="google_translate_element" class="hidden"></div>
 
-    {{-- ===== Automatic Full-Page Language Switcher Script ===== --}}
+    {{-- ===== Automatic Full-Page Multi-Language Switcher Script ===== --}}
     <script>
     function googleTranslateElementInit() {
         if (window.google && window.google.translate) {
             new google.translate.TranslateElement({
                 pageLanguage: 'id',
-                includedLanguages: 'id,en',
+                includedLanguages: 'id,en,ja,ko,zh-CN,ar,de,fr,es,ru',
                 autoDisplay: false
             }, 'google_translate_element');
         }
@@ -439,7 +542,104 @@
 
     <script>
     (function () {
-        var lang = localStorage.getItem('vizzio_lang') || 'id';
+        var currentLang = localStorage.getItem('vizzio_lang') || 'id';
+
+        // Dropdown elements
+        var desktopWrapper = document.getElementById('lang-dropdown-wrapper');
+        var desktopBtn = document.getElementById('lang-dropdown-btn');
+        var desktopMenu = document.getElementById('lang-dropdown-menu');
+        var desktopChevron = document.getElementById('lang-chevron');
+
+        var mobileWrapper = document.getElementById('lang-dropdown-mobile-wrapper');
+        var mobileBtn = document.getElementById('lang-dropdown-mobile-btn');
+        var mobileMenu = document.getElementById('lang-dropdown-mobile-menu');
+        var mobileChevron = document.getElementById('lang-mobile-chevron');
+
+        function openDropdown(btn, menu, chevron) {
+            if (!menu) return;
+            menu.classList.remove('invisible', 'opacity-0', 'scale-95');
+            menu.classList.add('opacity-100', 'scale-100');
+            if (chevron) chevron.classList.add('rotate-180');
+            if (btn) btn.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeDropdown(btn, menu, chevron) {
+            if (!menu) return;
+            menu.classList.remove('opacity-100', 'scale-100');
+            menu.classList.add('opacity-0', 'scale-95');
+            if (chevron) chevron.classList.remove('rotate-180');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+            setTimeout(function() {
+                if (btn && btn.getAttribute('aria-expanded') === 'false') {
+                    menu.classList.add('invisible');
+                }
+            }, 180);
+        }
+
+        function toggleDropdown(btn, menu, chevron) {
+            if (!menu) return;
+            var isClosed = menu.classList.contains('invisible') || menu.classList.contains('opacity-0');
+            if (isClosed) {
+                openDropdown(btn, menu, chevron);
+            } else {
+                closeDropdown(btn, menu, chevron);
+            }
+        }
+
+        if (desktopBtn && desktopMenu) {
+            desktopBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleDropdown(desktopBtn, desktopMenu, desktopChevron);
+            });
+        }
+
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleDropdown(mobileBtn, mobileMenu, mobileChevron);
+            });
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function(e) {
+            if (desktopWrapper && !desktopWrapper.contains(e.target)) {
+                closeDropdown(desktopBtn, desktopMenu, desktopChevron);
+            }
+            if (mobileWrapper && !mobileWrapper.contains(e.target)) {
+                closeDropdown(mobileBtn, mobileMenu, mobileChevron);
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDropdown(desktopBtn, desktopMenu, desktopChevron);
+                closeDropdown(mobileBtn, mobileMenu, mobileChevron);
+            }
+        });
+
+        // Ensure scrolling inside the language dropdown scrolls the list, NOT the webpage
+        document.querySelectorAll('.lang-dropdown-scroll').forEach(function(scrollEl) {
+            scrollEl.addEventListener('wheel', function(e) {
+                e.stopPropagation();
+                var maxScroll = this.scrollHeight - this.clientHeight;
+                if (maxScroll <= 0) return;
+
+                var next = this.scrollTop + e.deltaY;
+                if (next < 0) {
+                    this.scrollTop = 0;
+                } else if (next > maxScroll) {
+                    this.scrollTop = maxScroll;
+                } else {
+                    this.scrollTop = next;
+                }
+                e.preventDefault();
+            }, { passive: false });
+
+            scrollEl.addEventListener('touchmove', function(e) {
+                e.stopPropagation();
+            }, { passive: true });
+        });
 
         function clearGoogleTranslateCookies() {
             var host = window.location.hostname;
@@ -448,30 +648,86 @@
             document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=." + host + "; path=/;";
         }
 
-        function applyLang(l, isUserAction) {
-            lang = l;
-            localStorage.setItem('vizzio_lang', l);
-            var isEn = l === 'en';
+        function setGoogleTranslateCookie(langCode) {
+            var host = window.location.hostname;
+            var cookieVal = "/id/" + langCode;
+            document.cookie = "googtrans=" + cookieVal + "; path=/;";
+            document.cookie = "googtrans=" + cookieVal + "; domain=" + host + "; path=/;";
+            document.cookie = "googtrans=" + cookieVal + "; domain=." + host + "; path=/;";
+        }
 
-            // Update Navbar Button Text Labels
-            var label = l.toUpperCase();
-            var lbl1 = document.getElementById('lang-label');
-            var lbl2 = document.getElementById('lang-label-mobile');
-            if (lbl1) lbl1.textContent = label;
-            if (lbl2) lbl2.textContent = label;
+        function updateUI(code) {
+            // Find option button for code
+            var targetBtn = document.querySelector('.lang-option-btn[data-lang-code="' + code + '"]');
+            var shortCode = targetBtn ? targetBtn.getAttribute('data-lang-short') : code.toUpperCase();
 
-            document.documentElement.lang = isEn ? 'en' : 'id';
+            // Update text labels
+            var desktopCode = document.getElementById('current-lang-code');
+            var mobileCode = document.getElementById('current-lang-mobile-code');
+            if (desktopCode) desktopCode.textContent = shortCode;
+            if (mobileCode) mobileCode.textContent = shortCode;
 
-            // Curated elements toggle
-            document.querySelectorAll('[data-lang-id]').forEach(function (el) {
-                el.classList.toggle('hidden', isEn);
+            // Update flag SVGs
+            if (targetBtn) {
+                var flagSvg = targetBtn.querySelector('svg');
+                if (flagSvg) {
+                    var dFlag = document.getElementById('current-lang-flag');
+                    var mFlag = document.getElementById('current-lang-mobile-flag');
+                    if (dFlag) {
+                        dFlag.innerHTML = '';
+                        var clonedD = flagSvg.cloneNode(true);
+                        clonedD.setAttribute('class', 'w-4.5 h-3 rounded-[2px] shrink-0 shadow-xs border border-black/10');
+                        dFlag.appendChild(clonedD);
+                    }
+                    if (mFlag) {
+                        mFlag.innerHTML = '';
+                        var clonedM = flagSvg.cloneNode(true);
+                        clonedM.setAttribute('class', 'w-4 h-2.5 rounded-[2px] shrink-0 shadow-xs border border-black/10');
+                        mFlag.appendChild(clonedM);
+                    }
+                }
+            }
+
+            // Update check icons and active states across all dropdowns
+            document.querySelectorAll('.lang-option-btn').forEach(function(btn) {
+                var btnCode = btn.getAttribute('data-lang-code');
+                var isMatch = btnCode === code;
+                var check = btn.querySelector('.lang-check-icon');
+                if (check) {
+                    check.classList.toggle('hidden', !isMatch);
+                }
+                if (isMatch) {
+                    btn.classList.add('bg-primary/10', 'text-primary');
+                } else {
+                    btn.classList.remove('bg-primary/10', 'text-primary');
+                }
             });
-            document.querySelectorAll('[data-lang-en]').forEach(function (el) {
-                el.classList.toggle('hidden', !isEn);
+
+            // Toggle curated bilingual labels in template
+            var isId = code === 'id';
+            document.querySelectorAll('[data-lang-id]').forEach(function(el) {
+                el.classList.toggle('hidden', !isId);
+            });
+            document.querySelectorAll('[data-lang-en]').forEach(function(el) {
+                el.classList.toggle('hidden', isId);
             });
 
-            if (!isEn) {
-                // INDONESIAN (DEFAULT): Completely disable translation engine & restore raw default HTML
+            document.documentElement.lang = code;
+        }
+
+        function applyLang(code, isUserAction) {
+            currentLang = code;
+            localStorage.setItem('vizzio_lang', code);
+
+            updateUI(code);
+
+            // Close dropdowns
+            closeDropdown(desktopBtn, desktopMenu, desktopChevron);
+            closeDropdown(mobileBtn, mobileMenu, mobileChevron);
+
+            var bar = document.getElementById('vizzio-translate-bar');
+
+            if (code === 'id') {
                 clearGoogleTranslateCookies();
 
                 var select = document.querySelector('.goog-te-combo');
@@ -481,44 +737,60 @@
                 }
 
                 if (isUserAction && (document.querySelector('.goog-te-combo') || document.cookie.indexOf('googtrans') !== -1)) {
-                    // Reload once on switching back to ID if translation engine was active
-                    location.reload();
+                    if (bar) {
+                        bar.classList.add('is-active');
+                        bar.style.opacity = '1';
+                    }
+                    setTimeout(function() {
+                        location.reload();
+                    }, 300);
                 }
             } else {
-                // ENGLISH: Trigger translation to English
+                setGoogleTranslateCookie(code);
+
+                if (isUserAction && bar) {
+                    bar.classList.add('is-active');
+                    bar.style.opacity = '1';
+                }
+
                 var select = document.querySelector('.goog-te-combo');
                 if (select) {
-                    select.value = 'en';
+                    select.value = code;
                     select.dispatchEvent(new Event('change'));
-                } else {
-                    document.cookie = "googtrans=/id/en; path=/;";
-                    document.cookie = "googtrans=/id/en; domain=" + window.location.hostname + "; path=/;";
+                    if (bar) {
+                        setTimeout(function() {
+                            bar.style.opacity = '0';
+                            setTimeout(function() { bar.classList.remove('is-active'); }, 400);
+                        }, 500);
+                    }
+                } else if (isUserAction) {
+                    // If Google Translate engine isn't ready in DOM yet, reload page cleanly with cookie
+                    setTimeout(function() {
+                        location.reload();
+                    }, 250);
                 }
             }
         }
 
-        function toggleLang() {
-            var nextLang = lang === 'id' ? 'en' : 'id';
-            applyLang(nextLang, true);
-        }
-
-        var btn1 = document.getElementById('lang-switcher');
-        var btn2 = document.getElementById('lang-switcher-mobile');
-        if (btn1) btn1.addEventListener('click', toggleLang);
-        if (btn2) btn2.addEventListener('click', toggleLang);
-
-        window.addEventListener('load', function() {
-            if (lang === 'id') {
-                clearGoogleTranslateCookies();
-            } else {
-                applyLang(lang, false);
-            }
+        // Attach click listeners to all language options in dropdowns
+        document.querySelectorAll('.lang-option-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var code = this.getAttribute('data-lang-code');
+                applyLang(code, true);
+            });
         });
 
-        if (lang === 'id') {
+        // Initialize state on load
+        if (currentLang === 'id') {
             clearGoogleTranslateCookies();
+            updateUI('id');
         } else {
-            applyLang(lang, false);
+            setGoogleTranslateCookie(currentLang);
+            updateUI(currentLang);
+            window.addEventListener('load', function() {
+                applyLang(currentLang, false);
+            });
         }
     })();
     </script>

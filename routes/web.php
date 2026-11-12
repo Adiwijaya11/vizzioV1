@@ -22,8 +22,14 @@ use App\Http\Controllers\Admin\SecurityController;
 use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Admin\TechnologyController as AdminTechnologyController;
+use App\Http\Controllers\Admin\PartnerController as AdminPartnerController;
+use App\Http\Controllers\Admin\TipController as AdminTipController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ServiceController;
+use App\Models\Technology;
+use App\Models\Partner;
+use App\Models\Tip;
 
 Route::get('/', function () {
     return view('welcome');
@@ -152,39 +158,29 @@ Route::get('/news', function (Request $request) use ($getNewsCategoryData) {
     return view('news', compact('selectedCategory', 'categoryDetail', 'categoryDetails'));
 });
 
-Route::get('/news/category/{category}', function ($category) use ($getNewsCategoryData) {
-    $categoryAliases = [
-        'semua'      => 'all',
-        'all'        => 'all',
-        'perusahaan' => 'company',
-        'company'    => 'company',
-        'proyek'     => 'project',
-        'project'    => 'project',
-        'event'      => 'event',
-        'events'     => 'event',
-        'teknologi'  => 'tech',
-        'tech'       => 'tech',
-        'tips'       => 'tips',
-        'industri'   => 'industry',
-        'industry'   => 'industry',
+Route::get('/news/category/{category}', function ($category) {
+    $categoryRedirects = [
+        'semua'      => '/news',
+        'all'        => '/news',
+        'perusahaan' => '/about/company',
+        'company'    => '/about/company',
+        'proyek'     => '/projects',
+        'project'    => '/projects',
+        'event'      => '/events',
+        'events'     => '/events',
+        'teknologi'  => '/technology',
+        'tech'       => '/technology',
+        'tips'       => '/tips',
+        'industri'   => '/industries',
+        'industry'   => '/industries',
     ];
 
     $slugLower = strtolower($category);
-    if (!isset($categoryAliases[$slugLower])) {
+    if (!isset($categoryRedirects[$slugLower])) {
         abort(404);
     }
 
-    $selectedCategory = $categoryAliases[$slugLower];
-    if ($selectedCategory === 'all') {
-        return redirect('/news');
-    }
-    if ($selectedCategory === 'event') {
-        return redirect('/events');
-    }
-
-    [$categoryDetails, $categoryDetail] = $getNewsCategoryData($selectedCategory);
-
-    return view('news', compact('selectedCategory', 'categoryDetail', 'categoryDetails'));
+    return redirect($categoryRedirects[$slugLower]);
 });
 
 Route::get('/news/{slug}', function ($slug) {
@@ -243,9 +239,17 @@ Route::get('/about', function () {
     return redirect('/about/company');
 });
 
+Route::get('/company', function () {
+    return redirect('/about/company');
+});
+
+Route::get('/perusahaan', function () {
+    return redirect('/about/company');
+});
+
 Route::get('/about/company', function () {
     return view('about.company');
-});
+})->name('company.index');
 
 Route::get('/about/approach', function () {
     return view('about.approach');
@@ -253,6 +257,58 @@ Route::get('/about/approach', function () {
 
 Route::get('/about/team', function () {
     return view('about.team');
+});
+
+Route::get('/projects', function () {
+    return view('projects.index');
+})->name('projects.index');
+
+Route::get('/proyek', function () {
+    return redirect('/projects');
+});
+
+Route::get('/technology', function () {
+    $technologies = Technology::where('status', 'active')
+        ->orderBy('order')
+        ->orderBy('id')
+        ->get();
+    return view('technology', compact('technologies'));
+})->name('technology.index');
+
+Route::get('/teknologi', function () {
+    return redirect('/technology');
+});
+
+Route::get('/tips', function () {
+    $tips = Tip::where('status', 'active')
+        ->orderBy('order')
+        ->orderBy('id')
+        ->get();
+    return view('tips', compact('tips'));
+})->name('tips.index');
+
+Route::get('/industries', function () {
+    $partners = Partner::where('status', 'active')
+        ->orderBy('order')
+        ->orderBy('name')
+        ->get();
+    return view('industries', compact('partners'));
+})->name('industries.index');
+
+Route::get('/industri', function () {
+    return redirect('/industries');
+});
+
+Route::get('/partners', function () {
+    return redirect('/industries');
+})->name('partners.index');
+
+Route::get('/klien', function () {
+    return redirect('/industries');
+});
+
+Route::get('/mitra', function () {
+    return redirect('/industries');
 });
 
 Route::get('/contact', function () {
@@ -343,10 +399,13 @@ Route::middleware([])->group(function () {
     Route::resource('admin/events', AdminEventController::class)->names('admin.events');
     Route::resource('admin/projects', ProjectController::class)->names('admin.projects');
     Route::resource('admin/services', AdminServiceController::class)->names('admin.services');
+    Route::resource('admin/technologies', AdminTechnologyController::class)->names('admin.technologies');
     Route::get('/admin/gallery', [GalleryController::class, 'index'])->name('admin.gallery.index');
     Route::post('/admin/gallery', [GalleryController::class, 'store'])->name('admin.gallery.store');
     Route::resource('admin/team', TeamController::class)->names('admin.team');
     Route::resource('admin/testimonials', TestimonialController::class)->names('admin.testimonials');
+    Route::resource('admin/partners', AdminPartnerController::class)->names('admin.partners');
+    Route::resource('admin/tips', AdminTipController::class)->names('admin.tips');
 
     // 3. Interaksi & Pesan
     Route::get('/admin/messages', [MessageController::class, 'index'])->name('admin.messages.index');
