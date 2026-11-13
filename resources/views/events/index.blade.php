@@ -47,7 +47,7 @@
     {{-- Mobile Filter Bar (Only visible on screens < lg) --}}
     <div class="lg:hidden mb-6 space-y-3">
         <div class="flex items-center gap-2">
-            <form method="GET" action="/events" class="relative flex-1">
+            <form method="GET" action="/events" class="relative flex-1" data-event-search-form>
                 @foreach(request()->except(['q','page']) as $key => $val)
                     <input type="hidden" name="{{ $key }}" value="{{ $val }}">
                 @endforeach
@@ -56,6 +56,7 @@
                     name="q"
                     value="{{ request('q') }}"
                     placeholder="Cari event..."
+                    data-event-search-input
                     class="w-full rounded-xl border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder-ink-muted/50 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                 >
                 <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg>
@@ -70,23 +71,27 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
                 <span>Filter</span>
+                <span id="mobile-filter-badge">
                 @if($activeCount > 0)
                     <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-white">
                         {{ $activeCount }}
                     </span>
                 @endif
+                </span>
             </button>
         </div>
 
         {{-- Horizontal Quick Scroll for Types on Mobile --}}
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+        <div id="mobile-quick-filters" class="flex items-center gap-2 overflow-x-auto pb-1 text-xs" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
             <a href="/events{{ request()->except(['type','page']) ? '?' . http_build_query(request()->except(['type','page'])) : '' }}"
+               data-event-filter
                class="shrink-0 rounded-full px-3 py-1.5 font-medium transition-colors {{ !request('type') ? 'bg-primary text-white shadow-sm' : 'border border-border bg-white text-ink-muted hover:bg-muted hover:text-ink' }}">
                 Semua Tipe
             </a>
             @foreach($types as $type)
                 @php $tl = $typeLabels[$type] ?? ['label' => ucfirst($type)]; @endphp
                 <a href="/events?{{ http_build_query(array_merge(request()->except(['type','page']), ['type' => $type])) }}"
+                   data-event-filter
                    class="shrink-0 rounded-full px-3 py-1.5 font-medium transition-colors {{ request('type') === $type ? 'bg-primary text-white shadow-sm' : 'border border-border bg-white text-ink-muted hover:bg-muted hover:text-ink' }}">
                     {{ $tl['label'] }}
                 </a>
@@ -109,11 +114,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                         </svg>
                         <h2 class="text-base font-bold text-ink">Filter Event</h2>
+                        <span id="mobile-drawer-header-badge">
                         @if($activeCount > 0)
                             <span class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
                                 {{ $activeCount }} aktif
                             </span>
                         @endif
+                        </span>
                     </div>
                     <button type="button" id="close-event-filters-btn" class="rounded-lg p-1.5 text-ink-muted hover:bg-muted hover:text-ink transition-colors" aria-label="Tutup Filter">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -121,18 +128,20 @@
                 </div>
 
                 {{-- Scrollable Filter Content --}}
-                <div class="flex-1 overflow-y-auto p-5 space-y-6">
+                <div id="mobile-drawer-filters" class="flex-1 overflow-y-auto p-5 space-y-6">
                     {{-- Tipe Event --}}
                     <div>
                         <h3 class="mb-2.5 text-xs font-bold uppercase tracking-widest text-ink-muted">Tipe Event</h3>
                         <div class="grid grid-cols-2 gap-1.5">
                             <a href="/events{{ request()->except(['type','page']) ? '?' . http_build_query(request()->except(['type','page'])) : '' }}"
+                               data-event-filter
                                class="flex items-center justify-center rounded-lg px-3 py-2 text-xs font-medium transition-colors text-center {{ !request('type') ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
                                 <span>Semua Tipe</span>
                             </a>
                             @foreach($types as $type)
                                 @php $tl = $typeLabels[$type] ?? ['label' => ucfirst($type)]; @endphp
                                 <a href="/events?{{ http_build_query(array_merge(request()->except(['type','page']), ['type' => $type])) }}"
+                                   data-event-filter
                                    class="flex items-center justify-center rounded-lg px-3 py-2 text-xs font-medium transition-colors text-center {{ request('type') === $type ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
                                     <span>{{ $tl['label'] }}</span>
                                 </a>
@@ -146,6 +155,7 @@
                         <div class="grid grid-cols-2 gap-1.5">
                             @foreach($formats as $fKey => $fVal)
                                 <a href="/events?{{ http_build_query(array_merge(request()->except(['format','page']), $fKey ? ['format' => $fKey] : [])) }}"
+                                   data-event-filter
                                    class="flex items-center justify-center rounded-lg px-3 py-2 text-xs font-medium transition-colors text-center {{ request('format') === ($fKey ?: null) && ($fKey || !request('format')) ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
                                     <span>{{ $fVal['id'] }}</span>
                                 </a>
@@ -159,6 +169,7 @@
                         <div class="grid grid-cols-3 gap-1.5">
                             @foreach($prices as $pKey => $pVal)
                                 <a href="/events?{{ http_build_query(array_merge(request()->except(['price','page']), $pKey ? ['price' => $pKey] : [])) }}"
+                                   data-event-filter
                                    class="flex items-center justify-center rounded-lg px-2.5 py-2 text-xs font-medium transition-colors text-center {{ request('price') === ($pKey ?: null) && ($pKey || !request('price')) ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
                                     <span>{{ $pVal['id'] }}</span>
                                 </a>
@@ -172,6 +183,7 @@
                         <div class="grid grid-cols-3 gap-1.5">
                             @foreach($statuses as $sKey => $sVal)
                                 <a href="/events?{{ http_build_query(array_merge(request()->except(['status','page']), $sKey ? ['status' => $sKey] : [])) }}"
+                                   data-event-filter
                                    class="flex items-center justify-center rounded-lg px-2 py-2 text-xs font-medium transition-colors text-center {{ request('status') === ($sKey ?: null) && ($sKey || !request('status')) ? 'bg-primary text-white font-semibold shadow-sm' : 'bg-muted/40 text-ink hover:bg-muted' }}">
                                     <span>{{ $sVal['id'] }}</span>
                                 </a>
@@ -182,7 +194,7 @@
 
                 {{-- Footer Actions --}}
                 <div class="border-t border-border p-4 bg-muted/20 flex items-center gap-3">
-                    <a href="/events" class="flex-1 text-center rounded-xl border border-border bg-white py-2.5 text-xs font-semibold text-ink hover:bg-muted transition-colors">
+                    <a href="/events" data-event-filter class="flex-1 text-center rounded-xl border border-border bg-white py-2.5 text-xs font-semibold text-ink hover:bg-muted transition-colors">
                         Reset Filter
                     </a>
                     <button type="button" id="apply-event-filters-btn" class="flex-1 rounded-xl bg-primary py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-primary-dark transition-colors">
@@ -197,10 +209,10 @@
 
         {{-- Desktop Sidebar Filter (Hidden on screens < lg) --}}
         <aside class="hidden lg:block w-64 xl:w-72 shrink-0">
-            <div class="sticky top-24 space-y-5">
+            <div id="desktop-sidebar-filters" class="sticky top-24 space-y-5">
 
                 {{-- Search --}}
-                <form method="GET" action="/events" class="relative">
+                <form method="GET" action="/events" class="relative" data-event-search-form>
                     @foreach(request()->except(['q','page']) as $key => $val)
                         <input type="hidden" name="{{ $key }}" value="{{ $val }}">
                     @endforeach
@@ -209,6 +221,7 @@
                         name="q"
                         value="{{ request('q') }}"
                         placeholder="Cari event..."
+                        data-event-search-input
                         class="w-full rounded-xl border border-border bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder-ink-muted/50 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
                     >
                     <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg>
@@ -222,6 +235,7 @@
                     </h3>
                     <div class="space-y-1">
                         <a href="/events{{ request()->except(['type','page']) ? '?' . http_build_query(request()->except(['type','page'])) : '' }}"
+                           data-event-filter
                            class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ !request('type') ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
                             <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
                             <span data-lang-id>Semua Tipe</span>
@@ -230,6 +244,7 @@
                         @foreach($types as $type)
                             @php $tl = $typeLabels[$type] ?? ['label' => ucfirst($type)]; @endphp
                             <a href="/events?{{ http_build_query(array_merge(request()->except(['type','page']), ['type' => $type])) }}"
+                               data-event-filter
                                class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request('type') === $type ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
                                 @switch($type)
                                     @case('workshop')
@@ -268,6 +283,7 @@
                     <div class="space-y-1">
                         @foreach($formats as $fKey => $fVal)
                             <a href="/events?{{ http_build_query(array_merge(request()->except(['format','page']), $fKey ? ['format' => $fKey] : [])) }}"
+                               data-event-filter
                                class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request('format') === ($fKey ?: null) && ($fKey || !request('format')) ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
                                 @switch($fVal['type'])
                                     @case('all')
@@ -299,6 +315,7 @@
                     <div class="space-y-1">
                         @foreach($prices as $pKey => $pVal)
                             <a href="/events?{{ http_build_query(array_merge(request()->except(['price','page']), $pKey ? ['price' => $pKey] : [])) }}"
+                               data-event-filter
                                class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request('price') === ($pKey ?: null) && ($pKey || !request('price')) ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
                                 @switch($pVal['type'])
                                     @case('all')
@@ -324,6 +341,7 @@
                     <div class="space-y-1">
                         @foreach($statuses as $sKey => $sVal)
                             <a href="/events?{{ http_build_query(array_merge(request()->except(['status','page']), $sKey ? ['status' => $sKey] : [])) }}"
+                               data-event-filter
                                class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors {{ request('status') === ($sKey ?: null) && ($sKey || !request('status')) ? 'bg-primary/10 text-primary' : 'text-ink-muted hover:bg-muted hover:text-ink' }}">
                                 @switch($sVal['type'])
                                     @case('all')
@@ -345,7 +363,7 @@
 
                 @if($activeCount > 0)
                 <div class="pt-1 text-center">
-                    <a href="/events" class="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline">
+                    <a href="/events" data-event-filter class="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline">
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         <span>Reset Semua Filter ({{ $activeCount }})</span>
                     </a>
@@ -356,230 +374,348 @@
         </aside>
 
         {{-- Main Content --}}
-        <div class="flex-1 min-w-0">
+        <div id="events-main-content" class="flex-1 min-w-0">
 
             {{-- Featured Event Banner --}}
-            @if($featuredEvent && !request()->hasAny(['type','format','price','status','q']))
-            <div class="mb-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 via-white to-primary/5 shadow-sm">
-                <div class="flex flex-col sm:flex-row">
-                    @if($featuredEvent->image)
-                    <div class="sm:w-56 shrink-0">
-                        <img src="{{ $featuredEvent->image }}" alt="{{ $featuredEvent->title }}" class="h-48 w-full object-cover sm:h-full">
-                    </div>
-                    @endif
-                    <div class="flex-1 p-5 sm:p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
-                                <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                Featured
-                            </span>
-                            <span class="inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary capitalize">{{ $featuredEvent->type }}</span>
+            <div id="events-featured-banner">
+                @if($featuredEvent && !request()->hasAny(['type','format','price','status','q']))
+                <div class="mb-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 via-white to-primary/5 shadow-sm">
+                    <div class="flex flex-col sm:flex-row">
+                        @if($featuredEvent->image)
+                        <div class="sm:w-56 shrink-0">
+                            <img src="{{ $featuredEvent->image }}" alt="{{ $featuredEvent->title }}" class="h-48 w-full object-cover sm:h-full">
                         </div>
-                        <h3 class="text-lg font-bold text-ink leading-snug">{{ $featuredEvent->title }}</h3>
-                        <p class="mt-1.5 text-sm text-ink-muted line-clamp-2">{{ $featuredEvent->excerpt }}</p>
-                        <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-muted">
-                            <span class="flex items-center gap-1">
-                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                {{ $featuredEvent->event_date->translatedFormat('d M Y') }}
-                            </span>
-                            @if($featuredEvent->start_time)
-                            <span class="flex items-center gap-1">
-                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                                {{ \Carbon\Carbon::parse($featuredEvent->start_time)->format('H:i') }}
-                            </span>
-                            @endif
-                            @if($featuredEvent->location)
-                            <span class="flex items-center gap-1">
-                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                {{ $featuredEvent->location }}
-                            </span>
-                            @endif
-                        </div>
-                        <div class="mt-4">
-                            <a href="/events/{{ $featuredEvent->slug }}" class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-primary-dark transition-colors">
-                                <span data-lang-id>Lihat Detail</span>
-                                <span data-lang-en class="hidden">View Details</span>
-                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                            </a>
+                        @endif
+                        <div class="flex-1 p-5 sm:p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
+                                    <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    Featured
+                                </span>
+                                <span class="inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary capitalize">{{ $featuredEvent->type }}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-ink leading-snug">{{ $featuredEvent->title }}</h3>
+                            <p class="mt-1.5 text-sm text-ink-muted line-clamp-2">{{ $featuredEvent->excerpt }}</p>
+                            <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-muted">
+                                <span class="flex items-center gap-1">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    {{ $featuredEvent->event_date->translatedFormat('d M Y') }}
+                                </span>
+                                @if($featuredEvent->start_time)
+                                <span class="flex items-center gap-1">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                    {{ \Carbon\Carbon::parse($featuredEvent->start_time)->format('H:i') }}
+                                </span>
+                                @endif
+                                @if($featuredEvent->location)
+                                <span class="flex items-center gap-1">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    {{ $featuredEvent->location }}
+                                </span>
+                                @endif
+                            </div>
+                            <div class="mt-4">
+                                <a href="/events/{{ $featuredEvent->slug }}" class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-primary-dark transition-colors">
+                                    <span data-lang-id>Lihat Detail</span>
+                                    <span data-lang-en class="hidden">View Details</span>
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
-            @endif
 
             {{-- Active Filters --}}
-            @if(request()->hasAny(['type','format','price','status','q']))
-            <div class="mb-5 flex flex-wrap items-center gap-2">
-                <span class="text-xs font-medium text-ink-muted">Filter aktif:</span>
-                @if(request('type'))
-                    <a href="/events?{{ http_build_query(request()->except(['type','page'])) }}" class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
-                        {{ ucfirst(request('type')) }}
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            <div id="events-active-filters" class="transition-opacity duration-200">
+                @if(request()->hasAny(['type','format','price','status','q']))
+                <div class="mb-5 flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-medium text-ink-muted">Filter aktif:</span>
+                    @if(request('type'))
+                        <a href="/events?{{ http_build_query(request()->except(['type','page'])) }}" data-event-filter class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
+                            {{ ucfirst(request('type')) }}
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </a>
+                    @endif
+                    @if(request('format'))
+                        <a href="/events?{{ http_build_query(request()->except(['format','page'])) }}" data-event-filter class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
+                            {{ ucfirst(request('format')) }}
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </a>
+                    @endif
+                    @if(request('price'))
+                        <a href="/events?{{ http_build_query(request()->except(['price','page'])) }}" data-event-filter class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
+                            {{ request('price') === 'free' ? 'Gratis' : 'Berbayar' }}
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </a>
+                    @endif
+                    @if(request('status'))
+                        <a href="/events?{{ http_build_query(request()->except(['status','page'])) }}" data-event-filter class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
+                            {{ request('status') === 'upcoming' ? 'Akan Datang' : 'Selesai' }}
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </a>
+                    @endif
+                    @if(request('q'))
+                        <a href="/events?{{ http_build_query(request()->except(['q','page'])) }}" data-event-filter class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
+                            "{{ request('q') }}"
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </a>
+                    @endif
+                    <a href="/events" data-event-filter class="text-xs font-medium text-red-500 hover:text-red-700 transition-colors">
+                        <span data-lang-id>Hapus semua</span>
+                        <span data-lang-en class="hidden">Clear all</span>
                     </a>
+                </div>
                 @endif
-                @if(request('format'))
-                    <a href="/events?{{ http_build_query(request()->except(['format','page'])) }}" class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
-                        {{ ucfirst(request('format')) }}
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </a>
-                @endif
-                @if(request('price'))
-                    <a href="/events?{{ http_build_query(request()->except(['price','page'])) }}" class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
-                        {{ request('price') === 'free' ? 'Gratis' : 'Berbayar' }}
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </a>
-                @endif
-                @if(request('status'))
-                    <a href="/events?{{ http_build_query(request()->except(['status','page'])) }}" class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
-                        {{ request('status') === 'upcoming' ? 'Akan Datang' : 'Selesai' }}
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </a>
-                @endif
-                @if(request('q'))
-                    <a href="/events?{{ http_build_query(request()->except(['q','page'])) }}" class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
-                        "{{ request('q') }}"
-                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </a>
-                @endif
-                <a href="/events" class="text-xs font-medium text-red-500 hover:text-red-700 transition-colors">
-                    <span data-lang-id>Hapus semua</span>
-                    <span data-lang-en class="hidden">Clear all</span>
-                </a>
             </div>
-            @endif
 
-            {{-- Event Cards Grid --}}
-            @if($events->count() > 0)
-            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                @foreach($events as $event)
-                <a href="/events/{{ $event->slug }}" class="group flex flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5">
-                    {{-- Image --}}
-                    <div class="relative h-44 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
-                        @if($event->image)
-                            <img src="{{ $event->image }}" alt="{{ $event->title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
-                        @else
-                            <div class="flex h-full w-full items-center justify-center">
-                                <svg class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            {{-- Event Cards Grid / Results Container --}}
+            <div id="events-results">
+                @if($events->count() > 0)
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    @foreach($events as $event)
+                    <a href="/events/{{ $event->slug }}" class="group flex flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5">
+                        {{-- Image --}}
+                        <div class="relative h-44 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
+                            @if($event->image)
+                                <img src="{{ $event->image }}" alt="{{ $event->title }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            @else
+                                <div class="flex h-full w-full items-center justify-center">
+                                    <svg class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                </div>
+                            @endif
+                            {{-- Type Badge --}}
+                            <div class="absolute left-3 top-3 flex items-center gap-1.5">
+                                <span class="rounded-lg bg-white/95 backdrop-blur px-2.5 py-1 text-[11px] font-bold text-primary capitalize shadow-sm">{{ $event->type }}</span>
+                                @if($event->is_featured)
+                                    <span class="rounded-lg bg-amber-400 px-1.5 py-1 text-amber-950 shadow-sm inline-flex items-center gap-0.5 text-[10px] font-bold" title="Featured">
+                                        <svg class="h-3 w-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    </span>
+                                @endif
                             </div>
-                        @endif
-                        {{-- Type Badge --}}
-                        <div class="absolute left-3 top-3 flex items-center gap-1.5">
-                            <span class="rounded-lg bg-white/95 backdrop-blur px-2.5 py-1 text-[11px] font-bold text-primary capitalize shadow-sm">{{ $event->type }}</span>
-                            @if($event->is_featured)
-                                <span class="rounded-lg bg-amber-400 px-1.5 py-1 text-amber-950 shadow-sm inline-flex items-center gap-0.5 text-[10px] font-bold" title="Featured">
-                                    <svg class="h-3 w-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            {{-- Status Badge --}}
+                            @php
+                                $isPast = $event->event_date->isPast();
+                                $statusColor = $isPast ? 'bg-gray-500' : ($event->is_full ? 'bg-red-500' : 'bg-emerald-500');
+                                $statusText = $isPast ? 'Selesai' : ($event->is_full ? 'Penuh' : 'Tersedia');
+                            @endphp
+                            <span class="absolute right-3 top-3 inline-flex items-center gap-1 rounded-lg {{ $statusColor }} px-2 py-1 text-[10px] font-bold text-white shadow-sm">
+                                <span class="h-1.5 w-1.5 rounded-full bg-white {{ !$isPast && !$event->is_full ? 'animate-pulse' : '' }}"></span>
+                                {{ $statusText }}
+                            </span>
+                            {{-- Price --}}
+                            <div class="absolute bottom-3 right-3">
+                                <span class="rounded-lg {{ $event->is_free ? 'bg-emerald-500 text-white' : 'bg-white/95 text-ink' }} px-2.5 py-1 text-[11px] font-bold shadow-sm backdrop-blur">
+                                    {{ $event->formatted_price }}
                                 </span>
-                            @endif
-                        </div>
-                        {{-- Status Badge --}}
-                        @php
-                            $isPast = $event->event_date->isPast();
-                            $statusColor = $isPast ? 'bg-gray-500' : ($event->is_full ? 'bg-red-500' : 'bg-emerald-500');
-                            $statusText = $isPast ? 'Selesai' : ($event->is_full ? 'Penuh' : 'Tersedia');
-                        @endphp
-                        <span class="absolute right-3 top-3 inline-flex items-center gap-1 rounded-lg {{ $statusColor }} px-2 py-1 text-[10px] font-bold text-white shadow-sm">
-                            <span class="h-1.5 w-1.5 rounded-full bg-white {{ !$isPast && !$event->is_full ? 'animate-pulse' : '' }}"></span>
-                            {{ $statusText }}
-                        </span>
-                        {{-- Price --}}
-                        <div class="absolute bottom-3 right-3">
-                            <span class="rounded-lg {{ $event->is_free ? 'bg-emerald-500 text-white' : 'bg-white/95 text-ink' }} px-2.5 py-1 text-[11px] font-bold shadow-sm backdrop-blur">
-                                {{ $event->formatted_price }}
-                            </span>
-                        </div>
-                    </div>
-
-                    {{-- Content --}}
-                    <div class="flex flex-1 flex-col p-4">
-                        {{-- Date & Time --}}
-                        <div class="mb-2 flex items-center gap-3 text-xs text-ink-muted">
-                            <span class="flex items-center gap-1">
-                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                {{ $event->event_date->translatedFormat('d M Y') }}
-                            </span>
-                            @if($event->start_time)
-                            <span class="flex items-center gap-1">
-                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                                {{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }}
-                            </span>
-                            @endif
+                            </div>
                         </div>
 
-                        {{-- Title --}}
-                        <h3 class="text-[15px] font-bold leading-snug text-ink group-hover:text-primary transition-colors line-clamp-2">
-                            {{ $event->title }}
-                        </h3>
-
-                        {{-- Excerpt --}}
-                        <p class="mt-1.5 text-xs leading-relaxed text-ink-muted line-clamp-2 flex-1">
-                            {{ $event->excerpt }}
-                        </p>
-
-                        {{-- Meta --}}
-                        <div class="mt-3 flex flex-col gap-1.5 text-xs text-ink-muted">
-                            @if($event->location)
-                            <span class="flex items-center gap-1.5">
-                                <svg class="h-3.5 w-3.5 shrink-0 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                <span class="truncate">{{ $event->location }}</span>
-                            </span>
-                            @endif
-                            @if($event->speaker)
-                            <span class="flex items-center gap-1.5">
-                                <svg class="h-3.5 w-3.5 shrink-0 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                <span class="truncate">{{ $event->speaker }}</span>
-                            </span>
-                            @endif
-                        </div>
-
-                        {{-- Footer --}}
-                        <div class="mt-3 flex items-center justify-between border-t border-border/50 pt-3">
-                            <div class="flex items-center gap-1.5">
-                                @if($event->capacity)
-                                <span class="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-ink-muted">
-                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                                    {{ $event->registered }}/{{ $event->capacity }}
+                        {{-- Content --}}
+                        <div class="flex flex-1 flex-col p-4">
+                            {{-- Date & Time --}}
+                            <div class="mb-2 flex items-center gap-3 text-xs text-ink-muted">
+                                <span class="flex items-center gap-1">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    {{ $event->event_date->translatedFormat('d M Y') }}
+                                </span>
+                                @if($event->start_time)
+                                <span class="flex items-center gap-1">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                    {{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }}
                                 </span>
                                 @endif
-                                <span class="inline-flex rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-ink-muted capitalize">
-                                    {{ $event->format }}
+                            </div>
+
+                            {{-- Title --}}
+                            <h3 class="text-[15px] font-bold leading-snug text-ink group-hover:text-primary transition-colors line-clamp-2">
+                                {{ $event->title }}
+                            </h3>
+
+                            {{-- Excerpt --}}
+                            <p class="mt-1.5 text-xs leading-relaxed text-ink-muted line-clamp-2 flex-1">
+                                {{ $event->excerpt }}
+                            </p>
+
+                            {{-- Meta --}}
+                            <div class="mt-3 flex flex-col gap-1.5 text-xs text-ink-muted">
+                                @if($event->location)
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="h-3.5 w-3.5 shrink-0 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    <span class="truncate">{{ $event->location }}</span>
+                                </span>
+                                @endif
+                                @if($event->speaker)
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="h-3.5 w-3.5 shrink-0 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    <span class="truncate">{{ $event->speaker }}</span>
+                                </span>
+                                @endif
+                            </div>
+
+                            {{-- Footer --}}
+                            <div class="mt-3 flex items-center justify-between border-t border-border/50 pt-3">
+                                <div class="flex items-center gap-1.5">
+                                    @if($event->capacity)
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-ink-muted">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                                        {{ $event->registered }}/{{ $event->capacity }}
+                                    </span>
+                                    @endif
+                                    <span class="inline-flex rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-ink-muted capitalize">
+                                        {{ $event->format }}
+                                    </span>
+                                </div>
+                                <span class="text-xs font-semibold text-primary group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                                    Detail
+                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                                 </span>
                             </div>
-                            <span class="text-xs font-semibold text-primary group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                                Detail
-                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                            </span>
                         </div>
-                    </div>
-                </a>
-                @endforeach
-            </div>
+                    </a>
+                    @endforeach
+                </div>
 
-            {{-- Pagination --}}
-            <div class="mt-8">
-                {{ $events->links() }}
-            </div>
+                {{-- Pagination --}}
+                <div id="events-pagination" class="mt-8">
+                    {{ $events->links() }}
+                </div>
 
-            @else
-            {{-- Empty State --}}
-            <div class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/30 py-16 px-4 text-center">
-                <svg class="h-16 w-16 text-ink-muted/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <h3 class="text-lg font-bold text-ink">
-                    <span data-lang-id>Tidak Ada Event</span>
-                    <span data-lang-en class="hidden">No Events Found</span>
-                </h3>
-                <p class="mt-1 text-sm text-ink-muted max-w-sm">
-                    <span data-lang-id>Tidak ada event yang sesuai dengan filter saat ini. Coba ubah kriteria pencarian.</span>
-                    <span data-lang-en class="hidden">No events match the current filters. Try adjusting your search criteria.</span>
-                </p>
-                <a href="/events" class="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark transition-colors">
-                    <span data-lang-id>Lihat Semua Event</span>
-                    <span data-lang-en class="hidden">View All Events</span>
-                </a>
+                @else
+                {{-- Empty State --}}
+                <div class="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/30 py-16 px-4 text-center">
+                    <svg class="h-16 w-16 text-ink-muted/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <h3 class="text-lg font-bold text-ink">
+                        <span data-lang-id>Tidak Ada Event</span>
+                        <span data-lang-en class="hidden">No Events Found</span>
+                    </h3>
+                    <p class="mt-1 text-sm text-ink-muted max-w-sm">
+                        <span data-lang-id>Tidak ada event yang sesuai dengan filter saat ini. Coba ubah kriteria pencarian.</span>
+                        <span data-lang-en class="hidden">No events match the current filters. Try adjusting your search criteria.</span>
+                    </p>
+                    <a href="/events" data-event-filter class="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark transition-colors">
+                        <span data-lang-id>Lihat Semua Event</span>
+                        <span data-lang-en class="hidden">View All Events</span>
+                    </a>
+                </div>
+                @endif
             </div>
-            @endif
         </div>
     </div>
 </div>
+
+{{-- Skeleton Template Specifically for Events Filter --}}
+<template id="event-skeleton-template">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3" aria-busy="true" aria-label="Memuat event...">
+        @for($i = 0; $i < 6; $i++)
+        <div class="event-skeleton-card flex flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+            {{-- Skeleton Image Area --}}
+            <div class="relative h-44 overflow-hidden bg-slate-100">
+                <div class="event-skeleton-shimmer"></div>
+                {{-- Skeleton Type Badge --}}
+                <div class="absolute left-3 top-3">
+                    <div class="h-6 w-20 rounded-lg bg-white/80 shadow-sm"></div>
+                </div>
+                {{-- Skeleton Status Badge --}}
+                <div class="absolute right-3 top-3">
+                    <div class="h-6 w-16 rounded-lg bg-white/80 shadow-sm"></div>
+                </div>
+                {{-- Skeleton Price Badge --}}
+                <div class="absolute bottom-3 right-3">
+                    <div class="h-6 w-14 rounded-lg bg-white/80 shadow-sm"></div>
+                </div>
+            </div>
+
+            {{-- Skeleton Content Area --}}
+            <div class="flex flex-1 flex-col p-4">
+                {{-- Date & Time Skeleton --}}
+                <div class="mb-2.5 flex items-center gap-3">
+                    <div class="h-3.5 w-24 rounded bg-slate-200"></div>
+                    <div class="h-3.5 w-12 rounded bg-slate-100"></div>
+                </div>
+
+                {{-- Title Skeleton --}}
+                <div class="space-y-2 mb-2">
+                    <div class="h-4.5 w-11/12 rounded bg-slate-200"></div>
+                    <div class="h-4.5 w-3/5 rounded bg-slate-200"></div>
+                </div>
+
+                {{-- Excerpt Skeleton --}}
+                <div class="space-y-1.5 my-2 flex-1">
+                    <div class="h-3 w-full rounded bg-slate-100"></div>
+                    <div class="h-3 w-4/5 rounded bg-slate-100"></div>
+                </div>
+
+                {{-- Meta Skeleton --}}
+                <div class="mt-3 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <div class="h-3.5 w-3.5 rounded-full bg-slate-200 shrink-0"></div>
+                        <div class="h-3 w-1/2 rounded bg-slate-100"></div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="h-3.5 w-3.5 rounded-full bg-slate-200 shrink-0"></div>
+                        <div class="h-3 w-1/3 rounded bg-slate-100"></div>
+                    </div>
+                </div>
+
+                {{-- Footer Skeleton --}}
+                <div class="mt-4 flex items-center justify-between border-t border-border/50 pt-3">
+                    <div class="flex items-center gap-1.5">
+                        <div class="h-5 w-16 rounded-full bg-slate-100"></div>
+                        <div class="h-5 w-14 rounded-full bg-slate-100"></div>
+                    </div>
+                    <div class="h-4 w-12 rounded bg-slate-200"></div>
+                </div>
+            </div>
+        </div>
+        @endfor
+    </div>
+</template>
+
+<style>
+@keyframes eventShimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.event-skeleton-shimmer {
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.65) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: eventShimmer 1.5s infinite ease-in-out;
+}
+
+.event-skeleton-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.event-skeleton-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.45) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: eventShimmer 1.6s infinite ease-in-out;
+    pointer-events: none;
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -590,9 +726,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeBtn = document.getElementById('close-event-filters-btn');
     const applyBtn = document.getElementById('apply-event-filters-btn');
 
-    if (!drawer || !openBtn) return;
-
     function openDrawer() {
+        if (!drawer) return;
         drawer.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
         requestAnimationFrame(() => {
@@ -604,6 +739,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function closeDrawer() {
+        if (!drawer) return;
         backdrop.classList.remove('opacity-100');
         backdrop.classList.add('opacity-0');
         content.classList.remove('translate-x-0');
@@ -614,17 +750,210 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 300);
     }
 
-    openBtn.addEventListener('click', openDrawer);
+    if (openBtn) openBtn.addEventListener('click', openDrawer);
     if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
     if (backdrop) backdrop.addEventListener('click', closeDrawer);
     if (applyBtn) applyBtn.addEventListener('click', closeDrawer);
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !drawer.classList.contains('hidden')) {
+        if (e.key === 'Escape' && drawer && !drawer.classList.contains('hidden')) {
             closeDrawer();
         }
+    });
+
+    // ═══ Asynchronous Event Filtering with Skeleton Loading ═══
+    let currentAbortController = null;
+    let searchDebounceTimer = null;
+
+    function loadEvents(url, pushState = true) {
+        if (currentAbortController) {
+            currentAbortController.abort();
+        }
+        currentAbortController = new AbortController();
+
+        const resultsContainer = document.getElementById('events-results');
+        const skeletonTemplate = document.getElementById('event-skeleton-template');
+        const activeFiltersContainer = document.getElementById('events-active-filters');
+
+        // Display skeleton loading cards immediately
+        if (resultsContainer && skeletonTemplate) {
+            resultsContainer.innerHTML = '';
+            resultsContainer.appendChild(skeletonTemplate.content.cloneNode(true));
+        }
+
+        if (activeFiltersContainer) {
+            activeFiltersContainer.style.opacity = '0.35';
+            activeFiltersContainer.style.pointerEvents = 'none';
+        }
+
+        const startTime = Date.now();
+        const minDelay = 250; // smooth natural UX transition
+
+        fetch(url, {
+            signal: currentAbortController.signal,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response not ok');
+            return response.text();
+        })
+        .then(html => {
+            const elapsed = Date.now() - startTime;
+            const remainingDelay = Math.max(0, minDelay - elapsed);
+
+            setTimeout(() => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // 1. Swap Results Grid & Pagination
+                const newResults = doc.getElementById('events-results');
+                if (resultsContainer && newResults) {
+                    resultsContainer.innerHTML = newResults.innerHTML;
+                }
+
+                // 2. Swap Active Filters Bar
+                const newActiveFilters = doc.getElementById('events-active-filters');
+                if (activeFiltersContainer && newActiveFilters) {
+                    activeFiltersContainer.innerHTML = newActiveFilters.innerHTML;
+                    activeFiltersContainer.style.opacity = '1';
+                    activeFiltersContainer.style.pointerEvents = 'auto';
+                }
+
+                // 3. Swap Featured Banner
+                const featuredBanner = document.getElementById('events-featured-banner');
+                const newFeaturedBanner = doc.getElementById('events-featured-banner');
+                if (featuredBanner && newFeaturedBanner) {
+                    featuredBanner.innerHTML = newFeaturedBanner.innerHTML;
+                }
+
+                // 4. Swap Desktop Sidebar Filters
+                const desktopSidebar = document.getElementById('desktop-sidebar-filters');
+                const newDesktopSidebar = doc.getElementById('desktop-sidebar-filters');
+                if (desktopSidebar && newDesktopSidebar) {
+                    desktopSidebar.innerHTML = newDesktopSidebar.innerHTML;
+                }
+
+                // 5. Swap Mobile Quick Filters
+                const mobileQuick = document.getElementById('mobile-quick-filters');
+                const newMobileQuick = doc.getElementById('mobile-quick-filters');
+                if (mobileQuick && newMobileQuick) {
+                    mobileQuick.innerHTML = newMobileQuick.innerHTML;
+                }
+
+                // 6. Swap Mobile Drawer Filters
+                const mobileDrawerFilters = document.getElementById('mobile-drawer-filters');
+                const newMobileDrawerFilters = doc.getElementById('mobile-drawer-filters');
+                if (mobileDrawerFilters && newMobileDrawerFilters) {
+                    mobileDrawerFilters.innerHTML = newMobileDrawerFilters.innerHTML;
+                }
+
+                // 7. Swap Mobile Badges
+                const mobileBadge = document.getElementById('mobile-filter-badge');
+                const newMobileBadge = doc.getElementById('mobile-filter-badge');
+                if (mobileBadge && newMobileBadge) {
+                    mobileBadge.innerHTML = newMobileBadge.innerHTML;
+                }
+
+                const drawerHeaderBadge = document.getElementById('mobile-drawer-header-badge');
+                const newDrawerHeaderBadge = doc.getElementById('mobile-drawer-header-badge');
+                if (drawerHeaderBadge && newDrawerHeaderBadge) {
+                    drawerHeaderBadge.innerHTML = newDrawerHeaderBadge.innerHTML;
+                }
+
+                // 8. Sync Search Input values
+                const newQuery = doc.querySelector('input[name="q"]')?.value || '';
+                document.querySelectorAll('input[name="q"]').forEach(inp => {
+                    inp.value = newQuery;
+                });
+
+                // 9. Update History State
+                if (pushState) {
+                    window.history.pushState({ url: url }, '', url);
+                }
+
+                // 10. Scroll smoothly into view if user has scrolled down
+                const mainContent = document.getElementById('events-main-content');
+                if (mainContent && window.scrollY > mainContent.offsetTop) {
+                    mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, remainingDelay);
+        })
+        .catch(err => {
+            if (err.name === 'AbortError') return;
+            // Graceful fallback to full page load if fetch fails
+            window.location.href = url;
+        });
+    }
+
+    // Intercept filter link clicks (Sidebar, Mobile quick scroll, Drawer, Active badges, Pagination)
+    document.addEventListener('click', function(e) {
+        const filterLink = e.target.closest('[data-event-filter], #events-pagination a');
+        if (!filterLink) return;
+
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+        const href = filterLink.getAttribute('href');
+        if (!href) return;
+
+        e.preventDefault();
+
+        if (filterLink.closest('#mobile-filter-drawer')) {
+            closeDrawer();
+        }
+
+        loadEvents(href);
+    });
+
+    // Handle browser Back / Forward buttons
+    window.addEventListener('popstate', function() {
+        loadEvents(window.location.href, false);
+    });
+
+    // Intercept search form submit (Desktop & Mobile)
+    document.addEventListener('submit', function(e) {
+        const form = e.target.closest('[data-event-search-form]');
+        if (!form) return;
+
+        e.preventDefault();
+        clearTimeout(searchDebounceTimer);
+
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        for (const [key, value] of formData.entries()) {
+            if (value.trim() !== '') {
+                params.set(key, value.trim());
+            }
+        }
+        const targetUrl = form.action.split('?')[0] + (params.toString() ? '?' + params.toString() : '');
+        loadEvents(targetUrl);
+    });
+
+    // Debounced real-time search input typing
+    document.addEventListener('input', function(e) {
+        const input = e.target.closest('[data-event-search-input]');
+        if (!input) return;
+
+        // Keep all search inputs in sync
+        const val = input.value;
+        document.querySelectorAll('[data-event-search-input]').forEach(other => {
+            if (other !== input) other.value = val;
+        });
+
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            const form = input.closest('form');
+            if (!form) return;
+            const formData = new FormData(form);
+            const params = new URLSearchParams();
+            for (const [key, value] of formData.entries()) {
+                if (value.trim() !== '') {
+                    params.set(key, value.trim());
+                }
+            }
+            const targetUrl = form.action.split('?')[0] + (params.toString() ? '?' + params.toString() : '');
+            loadEvents(targetUrl);
+        }, 400);
     });
 });
 </script>
 @endsection
-

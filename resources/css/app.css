@@ -172,13 +172,16 @@ font[style] {
 }
 
 .service-wave-rise {
-    transform: translateY(105%);
-    transition: transform 1.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateY(calc(100% + 48px));
+    opacity: 0;
+    transition: transform 1.9s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.25s ease;
 }
 
 .group:hover .service-wave-rise,
 .group:focus-within .service-wave-rise {
     transform: translateY(0);
+    opacity: 1;
 }
 
 .service-wave-ink {

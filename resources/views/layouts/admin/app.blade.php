@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Panel — VizzioCraft')</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,45 +14,44 @@
         * { box-sizing: border-box; }
         html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; font-family: 'Poppins', sans-serif; }
 
-        /* === SIDEBAR: fixed position, guaranteed scroll === */
+        /* === SIDEBAR: fixed flex layout, guaranteed scroll === */
         .admin-sidebar {
             position: fixed;
             top: 0; left: 0;
-            width: 260px;
+            width: 268px;
             height: 100vh;
-            background: #fff;
-            border-right: 1px solid #e8edf5;
-            box-shadow: 1px 0 6px rgba(0,0,0,0.04);
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            box-shadow: 4px 0 24px -12px rgba(15, 23, 42, 0.08);
             z-index: 50;
+            display: flex;
+            flex-direction: column;
         }
         .sidebar-brand {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 72px;
-            padding: 17px 20px;
-            border-bottom: 1px solid #e8edf5;
-            background: #fff;
-            z-index: 2;
+            flex-shrink: 0;
+            height: 70px;
+            padding: 0 18px;
+            border-bottom: 1px solid #f1f5f9;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         .sidebar-footer {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            padding: 10px;
-            border-top: 1px solid #e8edf5;
-            background: #fff;
-            z-index: 2;
+            flex-shrink: 0;
+            padding: 12px;
+            border-top: 1px solid #f1f5f9;
+            background: #ffffff;
         }
-        /* Nav area fills the gap between brand and footer, scrolls independently */
+        /* Nav area fills remaining space between brand and footer */
         .sidebar-nav-wrap {
-            position: absolute;
-            top: 72px;
-            bottom: 110px; /* match footer height */
-            left: 0; right: 0;
+            flex: 1;
+            min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
-            padding: 14px 10px 8px;
+            padding: 16px 12px 12px;
         }
 
         /* === HIDE SCROLLBARS — scroll still works === */
@@ -61,23 +62,22 @@
 
         /* === MAIN CONTENT (offset by sidebar width) === */
         .admin-content {
-            margin-left: 260px;
+            margin-left: 268px;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            background: #FAFCFF;
+            background: #F8FAFC;
         }
         .admin-topbar {
             flex-shrink: 0;
-            border-bottom: 1px solid #e8edf5;
-            background: rgba(255,255,255,0.97);
+            border-bottom: 1px solid #e2e8f0;
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(16px);
             padding: 12px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         }
         .admin-main {
             flex: 1;
@@ -93,24 +93,141 @@
         }
 
         /* === NAV ITEMS === */
-        .nav-group         { margin-bottom: 20px; }
-        .nav-label         { font-size: 10px; font-weight: 800; color: #9aa5b4; text-transform: uppercase; letter-spacing: 0.08em; padding: 0 10px; margin-bottom: 4px; }
-        .nav-label.sa      { color: #9333ea; }
-        .nav-link          { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 600; color: #64748b; text-decoration: none; transition: all 0.15s; }
-        .nav-link:hover    { color: #2563eb; background: #f0f5ff; }
-        .nav-link.active   { color: #fff; background: #2563eb; box-shadow: 0 2px 8px rgba(37,99,235,0.25); }
-        .nav-link.sa-item  { color: #9333ea; }
-        .nav-link.sa-item:hover { background: #f5f0ff; color: #7e22ce; }
-        .nav-link.sa-active { color: #7e22ce; background: #f0e6ff; border: 1px solid #d8b4fe; }
-        .nav-link svg      { width: 15px; height: 15px; flex-shrink: 0; }
-        .nav-badge         { margin-left: auto; padding: 1px 7px; border-radius: 99px; font-size: 10px; font-weight: 700; }
-        .badge-green       { background: #d1fae5; color: #065f46; }
-        .badge-red         { background: #fee2e2; color: #991b1b; }
-        .badge-purple      { background: #ede9fe; color: #6d28d9; }
-        .badge-blue        { background: #dbeafe; color: #1e40af; }
+        .nav-group         { margin-bottom: 18px; }
+        .nav-group.sa-group {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 10px 8px;
+            margin-bottom: 18px;
+        }
+        .nav-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0 10px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-label.sa {
+            color: #1e3a8a;
+            padding: 0 8px;
+            margin-bottom: 8px;
+        }
+        .nav-sa-pill {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            margin-bottom: 2px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #475569;
+            text-decoration: none;
+            transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .nav-link svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            color: #94a3b8;
+            transition: color 0.15s ease;
+        }
+        .nav-link:hover {
+            color: #0f172a;
+            background: #f1f5f9;
+        }
+        .nav-link:hover svg {
+            color: #2563eb;
+        }
+        .nav-link.active {
+            color: #ffffff;
+            font-weight: 600;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 12px -2px rgba(37, 99, 235, 0.28);
+        }
+        .nav-link.active svg {
+            color: #ffffff;
+        }
+        .nav-link.sa-item {
+            color: #334155;
+        }
+        .nav-link.sa-item svg {
+            color: #64748b;
+        }
+        .nav-link.sa-item:hover {
+            background: #eff6ff;
+            color: #1e3a8a;
+        }
+        .nav-link.sa-item:hover svg {
+            color: #2563eb;
+        }
+        .nav-link.sa-active {
+            color: #ffffff;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            box-shadow: 0 4px 12px -2px rgba(30, 58, 138, 0.28);
+        }
+        .nav-link.sa-active svg {
+            color: #ffffff;
+        }
+        .nav-badge {
+            margin-left: auto;
+            min-width: 22px;
+            text-align: center;
+            padding: 2px 7px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+        }
+        .badge-blue,
+        .badge-purple {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #dbeafe;
+        }
+        .badge-green {
+            background: #ecfdf5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+        .badge-red {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+        .nav-link.active .nav-badge,
+        .nav-link.sa-active .nav-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.28);
+        }
 
         /* === FOOTER CARD === */
-        .session-card      { background: #f8faff; border: 1px solid #e2e8f4; border-radius: 14px; padding: 12px 14px; }
+        .session-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
     </style>
 </head>
 <body>
@@ -121,11 +238,11 @@
 
         {{-- Brand --}}
         <div class="sidebar-brand">
-            <a href="/admin/dashboard" style="display:flex; align-items:center; gap:10px; text-decoration:none;">
-                <div style="width:36px; height:36px; border-radius:12px; background:#2563eb; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; box-shadow:0 3px 8px rgba(37,99,235,0.3);">VC</div>
+            <a href="/admin/dashboard" style="display:flex; align-items:center; gap:11px; text-decoration:none;">
+                <div style="width:38px; height:38px; border-radius:11px; background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; letter-spacing:-0.02em; box-shadow:0 4px 10px -2px rgba(37,99,235,0.35);">VC</div>
                 <div>
-                    <div style="font-size:14px; font-weight:800; color:#0f172a; line-height:1;">Vizzio<span style="color:#2563eb;">Craft</span></div>
-                    <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.08em; margin-top:2px;">Control Panel</div>
+                    <div style="font-size:15px; font-weight:800; color:#0f172a; line-height:1.1; letter-spacing:-0.02em;">Vizzio<span style="color:#2563eb;">Craft</span></div>
+                    <div style="font-size:9.5px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.08em; margin-top:2px;">Control Panel</div>
                 </div>
             </a>
         </div>
@@ -221,8 +338,11 @@
 
             {{-- ---- GROUP: SUPER ADMIN ONLY ---- --}}
             @if(session('user_role') === 'super_admin')
-            <div class="nav-group">
-                <div class="nav-label sa">★ Khusus Super Admin</div>
+            <div class="nav-group sa-group">
+                <div class="nav-label sa">
+                    <span>Akses Sistem</span>
+                    <span class="nav-sa-pill">SUPER ADMIN</span>
+                </div>
 
                 <a href="/admin/users" class="nav-link {{ request()->is('admin/users') || (request()->is('admin/users/*') && !request()->is('admin/users/create') && !request()->is('admin/users/reset-password*')) ? 'sa-active' : 'sa-item' }}">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -289,18 +409,28 @@
         {{-- Session Footer (always visible, never scrolls away) --}}
         <div class="sidebar-footer">
             <div class="session-card">
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-                    <span style="font-size:11px; font-weight:700; color:#0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:120px;">{{ session('user_name', 'Administrator') }}</span>
-                    @if(session('user_role') === 'super_admin')
-                        <span style="padding:2px 7px; border-radius:6px; background:#ede9fe; color:#7e22ce; font-size:9px; font-weight:800; border:1px solid #d8b4fe;">SUPER ADMIN</span>
-                    @else
-                        <span style="padding:2px 7px; border-radius:6px; background:#e0f2fe; color:#0369a1; font-size:9px; font-weight:800; border:1px solid #bae6fd;">ADMIN</span>
-                    @endif
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:32px; height:32px; border-radius:10px; background:{{ session('user_role') === 'super_admin' ? 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)' : 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0;">
+                        {{ strtoupper(substr(session('user_name', 'A'), 0, 1)) }}
+                    </div>
+                    <div style="min-width:0; flex:1;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+                            <span style="font-size:11.5px; font-weight:700; color:#0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ session('user_name', 'Administrator') }}</span>
+                            @if(session('user_role') === 'super_admin')
+                                <span style="padding:2px 6px; border-radius:6px; background:#eff6ff; color:#1e3a8a; font-size:8.5px; font-weight:800; border:1px solid #bfdbfe; flex-shrink:0; letter-spacing:0.04em;">SUPER ADMIN</span>
+                            @else
+                                <span style="padding:2px 6px; border-radius:6px; background:#f1f5f9; color:#334155; font-size:8.5px; font-weight:800; border:1px solid #e2e8f0; flex-shrink:0; letter-spacing:0.04em;">ADMIN</span>
+                            @endif
+                        </div>
+                        <div style="font-size:10px; color:#64748b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:1px;">{{ session('user_email', 'admin@vizziocraft.com') }}</div>
+                    </div>
                 </div>
-                <div style="font-size:10px; color:#94a3b8; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ session('user_email', 'admin@vizziocraft.com') }}</div>
-                <div style="margin-top:6px; display:flex; align-items:center; gap:5px; font-size:9.5px; font-weight:700; color:#059669;">
-                    <span style="width:6px; height:6px; border-radius:50%; background:#10b981; display:inline-block; animation:pulse 2s infinite;"></span>
-                    MySQL Connected
+                <div style="margin-top:8px; padding-top:7px; border-top:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; font-size:10px; font-weight:600; color:#047857;">
+                    <span style="display:inline-flex; align-items:center; gap:6px;">
+                        <span style="width:6px; height:6px; border-radius:50%; background:#10b981; display:inline-block; animation:pulse 2s infinite;"></span>
+                        MySQL Connected
+                    </span>
+                    <span style="font-size:9.5px; color:#94a3b8; font-weight:500;">v2.0</span>
                 </div>
             </div>
         </div>
@@ -309,13 +439,14 @@
 
     {{-- ============================= MAIN CONTENT ============================= --}}
     <div class="admin-content">
+        <div id="adminPjaxBar" style="position:fixed; top:0; left:268px; right:0; height:2.5px; background:linear-gradient(90deg, #2563eb, #60a5fa); width:0%; opacity:0; z-index:9999; pointer-events:none; transition:width 0.25s ease, opacity 0.2s ease;"></div>
 
         {{-- Top Navbar Header (inside main, not full-width) --}}
         <header class="admin-topbar">
             <nav style="display:flex; align-items:center; gap:8px; font-size:12px; color:#94a3b8;">
                 <span style="font-weight:500;">Admin Portal</span>
                 <span>/</span>
-                <span style="font-weight:700; color:#0f172a;">@yield('page_title', 'Dashboard Overview')</span>
+                <span id="adminBreadcrumbTitle" style="font-weight:700; color:#0f172a;">@yield('page_title', 'Dashboard Overview')</span>
             </nav>
 
             <div style="display:flex; align-items:center; gap:10px;">
@@ -375,43 +506,245 @@
     .admin-section {
         scroll-margin-top: 16px;
     }
+    #adminMainContainer {
+        transition: opacity 0.15s ease;
+    }
+    #adminMainContainer.is-loading {
+        opacity: 0.55;
+        pointer-events: none;
+    }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const mainContainer = document.getElementById('adminMainContainer');
-    const navLinks = document.querySelectorAll('.admin-sidebar .nav-link');
+    const breadcrumbTitle = document.getElementById('adminBreadcrumbTitle');
+    const pjaxBar = document.getElementById('adminPjaxBar');
+    const sidebarLinks = document.querySelectorAll('.admin-sidebar a[href]');
+    let currentController = null;
 
-    // Handle smooth internal scrolling on sidebar hash link click
-    navLinks.forEach(link => {
+    function setActiveLink(targetLink) {
+        const navLinks = document.querySelectorAll('.admin-sidebar .nav-link');
+        navLinks.forEach(l => {
+            l.classList.remove('active');
+            if (l.classList.contains('sa-active')) {
+                l.classList.remove('sa-active');
+                l.classList.add('sa-item');
+            }
+        });
+
+        if (!targetLink || !targetLink.classList.contains('nav-link')) return;
+
+        if (targetLink.classList.contains('sa-item') || targetLink.closest('.nav-group')?.classList.contains('sa-group')) {
+            targetLink.classList.remove('sa-item');
+            targetLink.classList.add('sa-active');
+        } else {
+            targetLink.classList.add('active');
+        }
+    }
+
+    function syncSidebarFromDoc(doc) {
+        const fetchedMap = new Map();
+        doc.querySelectorAll('.admin-sidebar .nav-link').forEach(el => {
+            const href = el.getAttribute('href');
+            if (href) fetchedMap.set(href, el);
+        });
+
+        document.querySelectorAll('.admin-sidebar .nav-link').forEach(liveEl => {
+            const href = liveEl.getAttribute('href');
+            const fetchedEl = fetchedMap.get(href);
+            if (!fetchedEl) return;
+
+            liveEl.className = fetchedEl.className;
+
+            const liveBadge = liveEl.querySelector('.nav-badge');
+            const fetchedBadge = fetchedEl.querySelector('.nav-badge');
+            if (liveBadge && fetchedBadge) {
+                liveBadge.textContent = fetchedBadge.textContent;
+                liveBadge.className = fetchedBadge.className;
+            }
+        });
+    }
+
+    async function runPageScripts(mainScripts, stackScriptsHtml) {
+        const pageScriptsContainer = document.getElementById('adminPageScripts');
+        const tempStack = document.createElement('div');
+        tempStack.innerHTML = stackScriptsHtml || '';
+        const stackScripts = Array.from(tempStack.querySelectorAll('script'));
+
+        const allScripts = [...mainScripts, ...stackScripts];
+
+        // Clear old dynamic stack scripts container
+        if (pageScriptsContainer) {
+            pageScriptsContainer.innerHTML = '';
+        }
+
+        const origAddEventListener = document.addEventListener.bind(document);
+        document.addEventListener = function(type, listener, options) {
+            if (type === 'DOMContentLoaded' && typeof listener === 'function') {
+                queueMicrotask(() => listener.call(document, new Event('DOMContentLoaded')));
+                return;
+            }
+            return origAddEventListener(type, listener, options);
+        };
+
+        try {
+            for (const oldScript of allScripts) {
+                const src = oldScript.getAttribute('src');
+                if (src) {
+                    const alreadyLoaded = Array.from(document.scripts).some(s => s.getAttribute('src') === src || s.src === src);
+                    if (!alreadyLoaded) {
+                        await new Promise((resolve, reject) => {
+                            const s = document.createElement('script');
+                            s.src = src;
+                            s.onload = resolve;
+                            s.onerror = resolve;
+                            document.head.appendChild(s);
+                        });
+                    }
+                } else if (oldScript.textContent.trim()) {
+                    const s = document.createElement('script');
+                    if (oldScript.type) s.type = oldScript.type;
+                    s.textContent = oldScript.textContent;
+                    (pageScriptsContainer || document.body).appendChild(s);
+                }
+            }
+        } finally {
+            document.addEventListener = origAddEventListener;
+        }
+    }
+
+    function startProgress() {
+        if (!pjaxBar) return;
+        pjaxBar.style.opacity = '1';
+        pjaxBar.style.width = '35%';
+        requestAnimationFrame(() => {
+            pjaxBar.style.width = '78%';
+        });
+    }
+
+    function finishProgress() {
+        if (!pjaxBar) return;
+        pjaxBar.style.width = '100%';
+        setTimeout(() => {
+            pjaxBar.style.opacity = '0';
+            setTimeout(() => { pjaxBar.style.width = '0%'; }, 200);
+        }, 120);
+    }
+
+    async function navigateAdminPage(url, pushHistory = true, clickedLink = null) {
+        if (!mainContainer) {
+            window.location.href = url;
+            return;
+        }
+
+        if (currentController) {
+            currentController.abort();
+        }
+        currentController = new AbortController();
+
+        if (clickedLink) {
+            setActiveLink(clickedLink);
+        }
+
+        mainContainer.classList.add('is-loading');
+        startProgress();
+
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'text/html'
+                },
+                signal: currentController.signal
+            });
+
+            if (!response.ok) {
+                window.location.href = url;
+                return;
+            }
+
+            const finalUrl = response.url || url;
+            const html = await response.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const newMain = doc.getElementById('adminMainContainer');
+
+            // If redirected to login or non-admin layout, do normal navigation
+            if (!newMain) {
+                window.location.href = finalUrl;
+                return;
+            }
+
+            // Extract inline scripts from newMain before injecting HTML
+            const mainScripts = Array.from(newMain.querySelectorAll('script'));
+            mainScripts.forEach(s => s.remove());
+
+            document.title = doc.title || document.title;
+            const newBreadcrumb = doc.getElementById('adminBreadcrumbTitle');
+            if (breadcrumbTitle && newBreadcrumb) {
+                breadcrumbTitle.textContent = newBreadcrumb.textContent;
+            }
+
+            mainContainer.innerHTML = newMain.innerHTML;
+            mainContainer.scrollTop = 0;
+
+            syncSidebarFromDoc(doc);
+
+            if (pushHistory) {
+                window.history.pushState({ pjax: true, url: finalUrl }, '', finalUrl);
+            }
+
+            const newStackContainer = doc.getElementById('adminPageScripts');
+            await runPageScripts(mainScripts, newStackContainer ? newStackContainer.innerHTML : '');
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            window.location.href = url;
+        } finally {
+            mainContainer.classList.remove('is-loading');
+            finishProgress();
+        }
+    }
+
+    // Intercept sidebar links (no full page refresh)
+    sidebarLinks.forEach(link => {
         link.addEventListener('click', function(e) {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+            if (this.hasAttribute('download') || this.getAttribute('target') === '_blank') return;
+
             const href = this.getAttribute('href');
-            if (href && href.startsWith('#')) {
+            if (!href) return;
+
+            // Smooth internal hash scrolling
+            if (href.startsWith('#')) {
                 const targetId = href.substring(1);
                 const targetEl = document.getElementById(targetId);
                 if (targetEl && mainContainer) {
                     e.preventDefault();
                     targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     window.history.pushState(null, '', href);
-
-                    // Update active nav class
-                    navLinks.forEach(l => {
-                        l.classList.remove('active');
-                        if (l.classList.contains('sa-active')) {
-                            l.classList.remove('sa-active');
-                            l.classList.add('sa-item');
-                        }
-                    });
-
-                    if (this.classList.contains('sa-item') || this.closest('.nav-group')?.querySelector('.sa')) {
-                        this.classList.remove('sa-item');
-                        this.classList.add('sa-active');
-                    } else {
-                        this.classList.add('active');
-                    }
+                    setActiveLink(this);
                 }
+                return;
             }
+
+            const targetUrl = new URL(href, window.location.origin);
+            if (targetUrl.origin !== window.location.origin) return;
+
+            e.preventDefault();
+            if (targetUrl.href === window.location.href) {
+                mainContainer.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            navigateAdminPage(targetUrl.href, true, this);
         });
+    });
+
+    // Handle browser Back / Forward buttons
+    window.addEventListener('popstate', function() {
+        if (window.location.pathname.startsWith('/admin')) {
+            navigateAdminPage(window.location.href, false, null);
+        }
     });
 
     // Check on initial page load if hash exists
@@ -427,7 +760,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<div id="adminPageScripts">
 @stack('scripts')
+</div>
 
 </body>
 </html>

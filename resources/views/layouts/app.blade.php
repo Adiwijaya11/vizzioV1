@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'VizzioCraft')</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     <meta name="description" content="@yield('meta_description', 'VizzioCraft — modern digital solutions for growing businesses.')">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')

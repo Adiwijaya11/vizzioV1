@@ -249,6 +249,9 @@
             'security' => ['id' => 'Keamanan & WAF', 'en' => 'Security & WAF'],
             'ai'       => ['id' => 'AI & Data Pipeline', 'en' => 'AI & Data Pipeline'],
         ];
+
+        $filterRow1 = array_slice($filterCategories, 0, 4, true);
+        $filterRow2 = array_slice($filterCategories, 4, 4, true);
     @endphp
 
     {{-- ═══ CLEAN 50SVH IMAGE HERO (Bright Primary Blue Theme - Preserved) ═══ --}}
@@ -302,30 +305,46 @@
                 </p>
             </div>
 
-            {{-- Interactive Layer Filter & Live Search Toolbar --}}
-            <div class="mb-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                {{-- Category Filter Pills --}}
-                <div class="flex flex-wrap gap-2" role="tablist">
-                    @foreach($filterCategories as $fKey => $fLabel)
-                        <button
-                            type="button"
-                            data-tech-filter="{{ $fKey }}"
-                            class="tech-filter-btn rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 cursor-pointer {{ $fKey === 'all' ? 'bg-primary text-white shadow-sm' : 'bg-white text-ink-muted border border-border hover:border-primary/40 hover:text-primary' }}"
-                        >
-                            <span data-lang-id>{{ $fLabel['id'] }}</span>
-                            <span data-lang-en class="hidden">{{ $fLabel['en'] }}</span>
-                        </button>
-                    @endforeach
+            {{-- Interactive Layer Filter (2 Rows) & Live Search Toolbar --}}
+            <div class="mb-8 sm:mb-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                {{-- Category Filter Pills (Organized into 2 neat rows) --}}
+                <div class="flex flex-col gap-2 overflow-x-auto pb-1 max-w-full" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;" role="tablist">
+                    {{-- Row 1 --}}
+                    <div class="flex items-center gap-2 shrink-0">
+                        @foreach($filterRow1 as $fKey => $fLabel)
+                            <button
+                                type="button"
+                                data-tech-filter="{{ $fKey }}"
+                                class="tech-filter-btn shrink-0 whitespace-nowrap rounded-xl px-3.5 sm:px-4 py-2 text-xs font-bold transition-all duration-200 cursor-pointer {{ $fKey === 'all' ? 'bg-primary text-white shadow-sm' : 'bg-white text-ink-muted border border-border hover:border-primary/40 hover:text-primary' }}"
+                            >
+                                <span data-lang-id>{{ $fLabel['id'] }}</span>
+                                <span data-lang-en class="hidden">{{ $fLabel['en'] }}</span>
+                            </button>
+                        @endforeach
+                    </div>
+                    {{-- Row 2 --}}
+                    <div class="flex items-center gap-2 shrink-0">
+                        @foreach($filterRow2 as $fKey => $fLabel)
+                            <button
+                                type="button"
+                                data-tech-filter="{{ $fKey }}"
+                                class="tech-filter-btn shrink-0 whitespace-nowrap rounded-xl px-3.5 sm:px-4 py-2 text-xs font-bold transition-all duration-200 cursor-pointer {{ $fKey === 'all' ? 'bg-primary text-white shadow-sm' : 'bg-white text-ink-muted border border-border hover:border-primary/40 hover:text-primary' }}"
+                            >
+                                <span data-lang-id>{{ $fLabel['id'] }}</span>
+                                <span data-lang-en class="hidden">{{ $fLabel['en'] }}</span>
+                            </button>
+                        @endforeach
+                    </div>
                 </div>
 
                 {{-- Live Search Input --}}
-                <div class="w-full lg:w-80">
+                <div class="w-full lg:w-72 xl:w-80 shrink-0">
                     <div class="relative">
                         <input
                             type="text"
                             id="tech-search-input"
                             placeholder="Cari stack (Laravel, Redis, Go, K8s...)"
-                            class="w-full rounded-xl border border-border bg-white px-4 py-2.5 pl-10 text-xs sm:text-sm text-ink placeholder-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                            class="w-full rounded-xl border border-border bg-white px-4 py-2.5 pl-10 text-xs sm:text-sm text-ink placeholder-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
                         />
                         <svg class="absolute left-3.5 top-3 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -334,8 +353,8 @@
                 </div>
             </div>
 
-            {{-- Technology Cards Grid --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tech-cards-grid">
+            {{-- Technology Cards Grid: 2 columns on mobile/tablet, 3 columns on desktop --}}
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6" id="tech-cards-grid">
                 @foreach($techList as $tech)
                     @php
                         $techName        = is_array($tech) ? $tech['name'] : $tech->name;
@@ -359,13 +378,13 @@
                         data-tech-card
                         data-category="{{ $techCat }}"
                         data-search="{{ $searchBlob }}"
-                        class="group rounded-2xl border border-border bg-white p-6 hover:border-primary/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                        class="group rounded-2xl border border-border bg-white p-3 sm:p-6 hover:border-primary/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
                     >
                         <div>
                             {{-- Header: Crisp Logo, Category, Version --}}
-                            <div class="flex items-start justify-between gap-3 mb-5">
-                                <div class="flex items-center gap-3.5">
-                                    <div class="h-12 w-12 rounded-xl bg-slate-50 border border-slate-200/80 p-2 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-primary/30 transition-transform">
+                            <div class="flex items-start justify-between gap-2 sm:gap-3 mb-2.5 sm:mb-5">
+                                <div class="flex items-center gap-2 sm:gap-3.5 min-w-0">
+                                    <div class="h-9 w-9 sm:h-12 sm:w-12 rounded-lg sm:rounded-xl bg-slate-50 border border-slate-200/80 p-1.5 sm:p-2 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-primary/30 transition-transform">
                                         <img
                                             src="{{ $techImage }}"
                                             alt="{{ $techName }}"
@@ -373,35 +392,35 @@
                                             onerror="this.src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/devicon/devicon-original.svg'"
                                         />
                                     </div>
-                                    <div>
-                                        <h3 class="text-base font-extrabold text-ink group-hover:text-primary transition-colors leading-snug">
+                                    <div class="min-w-0">
+                                        <h3 class="text-xs sm:text-base font-extrabold text-ink group-hover:text-primary transition-colors leading-snug truncate sm:whitespace-normal">
                                             {{ $techName }}
                                         </h3>
                                         @if($techVersion)
-                                            <span class="text-[11px] font-semibold text-slate-500">{{ $techVersion }}</span>
+                                            <span class="text-[10px] sm:text-[11px] font-semibold text-slate-500 block truncate">{{ $techVersion }}</span>
                                         @endif
                                     </div>
                                 </div>
 
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+                                <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
                                     {{ strtoupper($techCat) }}
                                 </span>
                             </div>
 
                             {{-- Role Title --}}
-                            <div class="text-xs font-bold text-primary mb-2.5">
+                            <div class="text-[11px] sm:text-xs font-bold text-primary mb-2 sm:mb-2.5 line-clamp-1 sm:line-clamp-none">
                                 {{ $techRole }}
                             </div>
 
-                            {{-- Description --}}
-                            <p class="text-xs sm:text-sm text-ink-muted leading-relaxed mb-4">
+                            {{-- Description (Hidden on mobile to keep 2-column cards clean) --}}
+                            <p class="hidden sm:block text-xs md:text-sm text-ink-muted leading-relaxed mb-4 line-clamp-3">
                                 <span data-lang-id>{{ $techDescId }}</span>
                                 <span data-lang-en class="hidden">{{ $techDescEn }}</span>
                             </p>
 
-                            {{-- Features Tags --}}
+                            {{-- Features Tags (Hidden on mobile to keep 2-column cards clean) --}}
                             @if(!empty($techFeatures) && is_array($techFeatures))
-                                <div class="flex flex-wrap gap-1.5 mb-5">
+                                <div class="hidden sm:flex flex-wrap gap-1.5 mb-5">
                                     @foreach(array_slice($techFeatures, 0, 3) as $tag)
                                         <span class="text-[10px] font-semibold bg-slate-50 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-md">
                                             {{ $tag }}
@@ -417,21 +436,20 @@
                         </div>
 
                         {{-- Card Bottom Info & Interactive Action --}}
-                        <div class="pt-4 border-t border-border/70 flex items-center justify-between gap-3">
-                            <div>
+                        <div class="pt-2 sm:pt-4 border-t border-border/70 flex items-center justify-between gap-1.5 sm:gap-3">
+                            <div class="min-w-0">
                                 @if($techMetric)
-                                    <div class="text-[10px] font-bold text-emerald-700 flex items-center gap-1">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                        {{ $techMetric }}
+                                    <div class="hidden sm:flex text-[10px] font-bold text-emerald-700 items-center gap-1 truncate">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                                        <span class="truncate">{{ $techMetric }}</span>
                                     </div>
-                                @else
-                                    <span class="text-[10px] font-bold text-slate-400">Enterprise Ready</span>
                                 @endif
+                                <span class="sm:hidden text-[10px] font-semibold text-slate-400">Detail</span>
                             </div>
 
                             <button
                                 type="button"
-                                class="tech-spec-btn text-xs font-bold text-primary hover:text-primary-dark transition-colors inline-flex items-center gap-1 cursor-pointer"
+                                class="tech-spec-btn text-[11px] sm:text-xs font-bold text-primary hover:text-primary-dark transition-colors inline-flex items-center gap-0.5 sm:gap-1 cursor-pointer shrink-0"
                                 data-spec-name="{{ $techName }}"
                                 data-spec-image="{{ $techImage }}"
                                 data-spec-category="{{ strtoupper($techCat) }}"
@@ -443,9 +461,9 @@
                                 data-spec-tags="{{ is_array($techFeatures) ? implode(', ', $techFeatures) : '' }}"
                                 data-spec-docs="{{ $techUrl ?: '' }}"
                             >
-                                <span data-lang-id>Spesifikasi</span>
-                                <span data-lang-en class="hidden">Specs</span>
-                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <span data-lang-id>Lihat</span>
+                                <span data-lang-en class="hidden">View</span>
+                                <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                             </button>
@@ -645,8 +663,18 @@
     let currentCat = 'all';
     let currentQ   = '';
 
-    const onCls  = 'tech-filter-btn rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 cursor-pointer bg-primary text-white shadow-sm';
-    const offCls = 'tech-filter-btn rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 cursor-pointer bg-white text-ink-muted border border-border hover:border-primary/40 hover:text-primary';
+    const activeClasses = ['bg-primary', 'text-white', 'shadow-sm'];
+    const inactiveClasses = ['bg-white', 'text-ink-muted', 'border', 'border-border', 'hover:border-primary/40', 'hover:text-primary'];
+
+    function setBtnState(btn, isActive) {
+        if (isActive) {
+            btn.classList.remove(...inactiveClasses);
+            btn.classList.add(...activeClasses);
+        } else {
+            btn.classList.remove(...activeClasses);
+            btn.classList.add(...inactiveClasses);
+        }
+    }
 
     function runFilter() {
         let visibleCount = 0;
@@ -674,7 +702,7 @@
         btn.addEventListener('click', function () {
             currentCat = btn.getAttribute('data-tech-filter');
             filterBtns.forEach(function (b) {
-                b.className = (b === btn) ? onCls : offCls;
+                setBtnState(b, b === btn);
             });
             runFilter();
         });
@@ -693,7 +721,7 @@
             currentQ   = '';
             if (searchInp) searchInp.value = '';
             filterBtns.forEach(function (b) {
-                b.className = (b.getAttribute('data-tech-filter') === 'all') ? onCls : offCls;
+                setBtnState(b, b.getAttribute('data-tech-filter') === 'all');
             });
             runFilter();
         });
@@ -762,8 +790,17 @@
     }
 
     specBtns.forEach(function (b) {
-        b.addEventListener('click', function () {
+        b.addEventListener('click', function (e) {
+            e.stopPropagation();
             openModal(b);
+        });
+    });
+
+    techCards.forEach(function (card) {
+        card.addEventListener('click', function (e) {
+            if (e.target.closest('a')) return;
+            const b = card.querySelector('.tech-spec-btn');
+            if (b) openModal(b);
         });
     });
 

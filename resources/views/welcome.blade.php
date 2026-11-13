@@ -25,12 +25,26 @@
 
 @section('content')
     {{-- Hero Section --}}
+    @php
+        $heroBgImage = $heroBanner['bg_image'] ?? null;
+    @endphp
     <section data-hero-section class="relative z-30 w-full min-h-[calc(100svh-4rem)] lg:h-[calc(100svh-4rem)] flex items-center">
-        {{-- Dark background gradient --}}
+        {{-- Base dark background gradient --}}
         <div class="absolute inset-0 bg-gradient-to-br from-primary-deep via-primary to-[#1E40AF]" aria-hidden="true"></div>
         
-        {{-- Background Shape — Organic SVG Blob (Responsive: Mobile + Desktop) --}}
-        <div id="hero-blob" style="opacity: 0; transform: translateX(-160px);" class="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        @if(!empty($heroBgImage))
+            {{-- Mode 2: Custom Hero Image Background (Configured in Super Admin) --}}
+            <div id="hero-bg-image" class="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+                <img
+                    src="{{ $heroBgImage }}"
+                    alt="VizzioCraft Hero Background"
+                    class="h-full w-full object-cover object-center"
+                />
+                <div class="absolute inset-0 bg-gradient-to-r from-primary-deep/90 via-primary/75 to-primary/45"></div>
+            </div>
+        @else
+            {{-- Mode 1: Organic SVG Blob (Default when no image is set) --}}
+            <div id="hero-blob" style="opacity: 0; transform: translateX(-160px);" class="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
             {{-- Desktop SVG Blob (Screens lg and above) --}}
             <svg class="hidden lg:block absolute left-0 top-0 w-full h-full" viewBox="0 0 1200 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -56,79 +70,61 @@
                 {{-- ① Main organic blob fill --}}
                 <path d="
                     M0,0
-                    L840,0
-                    C910,0 975,38 998,118
-                    C1021,198 1008,272 992,348
-                    C976,424 998,478 982,560
-                    C966,642 924,706 845,762
-                    C766,818 645,858 468,876
-                    C291,894 148,892 0,900
+                    L850,0
+                    C920,0 990,45 1005,140
+                    C1020,245 985,340 980,440
+                    C975,540 1000,620 965,710
+                    C930,800 830,855 640,880
+                    C450,905 200,896 0,900
                     Z
                 " fill="#2158D0"/>
 
                 {{-- ② Primary radial glow — upper-left spotlight --}}
                 <path d="
-                    M0,0 L840,0
-                    C910,0 975,38 998,118
-                    C1021,198 1008,272 992,348
-                    C976,424 998,478 982,560
-                    C966,642 924,706 845,762
-                    C766,818 645,858 468,876
-                    C291,894 148,892 0,900 Z
+                    M0,0 L850,0
+                    C920,0 990,45 1005,140
+                    C1020,245 985,340 980,440
+                    C975,540 1000,620 965,710
+                    C930,800 830,855 640,880
+                    C450,905 200,896 0,900 Z
                 " fill="url(#blobGlow1)"/>
 
                 {{-- ③ Secondary glow — bottom accent --}}
                 <path d="
-                    M0,0 L840,0
-                    C910,0 975,38 998,118
-                    C1021,198 1008,272 992,348
-                    C976,424 998,478 982,560
-                    C966,642 924,706 845,762
-                    C766,818 645,858 468,876
-                    C291,894 148,892 0,900 Z
+                    M0,0 L850,0
+                    C920,0 990,45 1005,140
+                    C1020,245 985,340 980,440
+                    C975,540 1000,620 965,710
+                    C930,800 830,855 640,880
+                    C450,905 200,896 0,900 Z
                 " fill="url(#blobGlow2)"/>
 
-                {{-- ④ Top-left large soft highlight ellipse --}}
-                <ellipse cx="220" cy="140" rx="380" ry="170" fill="white" fill-opacity="0.055" transform="rotate(-12 220 140)"/>
+                {{-- ④ Top-left broad soft ambient highlight --}}
+                <ellipse cx="260" cy="160" rx="420" ry="190" fill="white" fill-opacity="0.05" transform="rotate(-12 260 160)"/>
 
-                {{-- ⑤ Small crisp inner highlight pearl — top-left corner --}}
-                <ellipse cx="80" cy="60" rx="120" ry="55" fill="white" fill-opacity="0.09" transform="rotate(-8 80 60)"/>
+                {{-- ⑤ Bottom-center subtle depth lift --}}
+                <ellipse cx="400" cy="820" rx="340" ry="85" fill="white" fill-opacity="0.03"/>
 
-                {{-- ⑥ Mid-right decorative soft glow circle --}}
-                <circle cx="820" cy="400" r="160" fill="white" fill-opacity="0.025"/>
+                {{-- ⑥ Top-edge linear sheen band --}}
+                <rect x="0" y="0" width="880" height="6" fill="url(#topSheen)" rx="0"/>
 
-                {{-- ⑦ Bottom-center subtle lift --}}
-                <ellipse cx="380" cy="820" rx="300" ry="80" fill="white" fill-opacity="0.03"/>
-
-                {{-- ⑧ Top-edge linear sheen band --}}
-                <rect x="0" y="0" width="900" height="6" fill="url(#topSheen)" rx="0"/>
-
-                {{-- ⑨ Right-edge flowing shimmer arc --}}
+                {{-- ⑦ Clean flowing luminous edge shimmer arc --}}
                 <path d="
-                    M840,0
-                    C910,0 975,38 998,118
-                    C1021,198 1008,272 992,348
-                    C976,424 998,478 982,560
-                    C966,642 924,706 845,762
-                " fill="none" stroke="white" stroke-opacity="0.1" stroke-width="1.5" stroke-linecap="round"/>
+                    M850,0
+                    C920,0 990,45 1005,140
+                    C1020,245 985,340 980,440
+                    C975,540 1000,620 965,710
+                    C930,800 830,855 640,880
+                " fill="none" stroke="white" stroke-opacity="0.12" stroke-width="1.5" stroke-linecap="round"/>
 
-                {{-- ⑩ Offset inner echo arc (gives 3D depth) --}}
+                {{-- ⑧ Offset inner depth echo line --}}
                 <path d="
-                    M820,12
-                    C888,14 950,50 972,128
-                    C994,206 982,278 968,354
-                    C954,430 974,482 960,562
-                    C946,642 906,702 830,756
-                " fill="none" stroke="white" stroke-opacity="0.045" stroke-width="1" stroke-linecap="round"/>
-
-                {{-- ⑪ Scattered micro-dot accents for texture --}}
-                <circle cx="160" cy="240" r="3" fill="white" fill-opacity="0.12"/>
-                <circle cx="280" cy="120" r="2" fill="white" fill-opacity="0.1"/>
-                <circle cx="500" cy="60"  r="2.5" fill="white" fill-opacity="0.09"/>
-                <circle cx="680" cy="30"  r="2" fill="white" fill-opacity="0.08"/>
-                <circle cx="90"  cy="400" r="3" fill="white" fill-opacity="0.07"/>
-                <circle cx="340" cy="700" r="2" fill="white" fill-opacity="0.06"/>
-                <circle cx="600" cy="780" r="2.5" fill="white" fill-opacity="0.05"/>
+                    M832,10
+                    C900,10 968,52 982,142
+                    C996,242 964,334 958,432
+                    C952,530 978,610 944,698
+                    C912,786 816,840 632,864
+                " fill="none" stroke="white" stroke-opacity="0.04" stroke-width="1" stroke-linecap="round"/>
             </svg>
 
             {{-- Mobile & Tablet SVG Blob (Screens below lg) --}}
@@ -156,15 +152,13 @@
                     </linearGradient>
                 </defs>
 
-                {{-- ① Mobile Organic Blob Main Fill --}}
+                {{-- ① Mobile Organic Blob Main Fill (Smooth graceful continuous wave) --}}
                 <path d="
                     M0,0
-                    L390,0
-                    C450,0 510,45 500,130
-                    C490,215 410,270 440,360
-                    C470,450 530,500 515,600
-                    C500,700 410,760 435,845
-                    C450,905 395,955 300,960
+                    L410,0
+                    C480,0 520,100 505,250
+                    C490,400 430,520 445,680
+                    C460,820 420,920 290,960
                     L0,960
                     Z
                 " fill="url(#mobileBlobFill)"/>
@@ -172,12 +166,10 @@
                 {{-- ② Primary Ambient Radial Spotlight --}}
                 <path d="
                     M0,0
-                    L390,0
-                    C450,0 510,45 500,130
-                    C490,215 410,270 440,360
-                    C470,450 530,500 515,600
-                    C500,700 410,760 435,845
-                    C450,905 395,955 300,960
+                    L410,0
+                    C480,0 520,100 505,250
+                    C490,400 430,520 445,680
+                    C460,820 420,920 290,960
                     L0,960
                     Z
                 " fill="url(#mobileBlobGlow1)"/>
@@ -185,61 +177,38 @@
                 {{-- ③ Secondary Lower Radial Accent --}}
                 <path d="
                     M0,0
-                    L390,0
-                    C450,0 510,45 500,130
-                    C490,215 410,270 440,360
-                    C470,450 530,500 515,600
-                    C500,700 410,760 435,845
-                    C450,905 395,955 300,960
+                    L410,0
+                    C480,0 520,100 505,250
+                    C490,400 430,520 445,680
+                    C460,820 420,920 290,960
                     L0,960
                     Z
                 " fill="url(#mobileBlobGlow2)"/>
 
-                {{-- ④ Top-left soft highlight ellipse --}}
-                <ellipse cx="140" cy="110" rx="220" ry="90" fill="white" fill-opacity="0.06" transform="rotate(-10 140 110)"/>
+                {{-- ④ Soft ambient highlight ellipse --}}
+                <ellipse cx="160" cy="120" rx="250" ry="100" fill="white" fill-opacity="0.06" transform="rotate(-10 160 120)"/>
 
-                {{-- ⑤ Inner pearl glow accent --}}
-                <ellipse cx="70" cy="45" rx="90" ry="35" fill="white" fill-opacity="0.1" transform="rotate(-6 70 45)"/>
-
-                {{-- ⑥ Mid soft glow circle --}}
-                <circle cx="430" cy="380" r="130" fill="white" fill-opacity="0.035"/>
-
-                {{-- ⑦ Bottom subtle lift --}}
-                <ellipse cx="220" cy="880" rx="190" ry="60" fill="white" fill-opacity="0.04"/>
-
-                {{-- ⑧ Top-edge sheen strip --}}
+                {{-- ⑤ Top-edge sheen strip --}}
                 <rect x="0" y="0" width="450" height="4" fill="url(#mobileTopSheen)"/>
 
-                {{-- ⑨ Flowing luminous shimmer arc along the boundary --}}
+                {{-- ⑥ Flowing luminous shimmer arc along the boundary --}}
                 <path d="
-                    M390,0
-                    C450,0 510,45 500,130
-                    C490,215 410,270 440,360
-                    C470,450 530,500 515,600
-                    C500,700 410,760 435,845
-                    C450,905 395,955 300,960
-                " fill="none" stroke="white" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"/>
+                    M410,0
+                    C480,0 520,100 505,250
+                    C490,400 430,520 445,680
+                    C460,820 420,920 290,960
+                " fill="none" stroke="white" stroke-opacity="0.18" stroke-width="2" stroke-linecap="round"/>
 
-                {{-- ⑩ Offset inner depth echo arc for 3D glassy realism --}}
+                {{-- ⑦ Offset inner depth echo arc for 3D glassy realism --}}
                 <path d="
-                    M376,8
-                    C434,8 488,48 478,126
-                    C468,204 394,264 422,352
-                    C452,440 508,490 494,588
-                    C480,686 394,746 418,836
-                    C432,894 380,942 288,950
-                " fill="none" stroke="white" stroke-opacity="0.075" stroke-width="1.2" stroke-linecap="round"/>
-
-                {{-- ⑪ Delicate floating micro-dots for modern tech elegance --}}
-                <circle cx="90"  cy="180" r="2.5" fill="white" fill-opacity="0.22"/>
-                <circle cx="210" cy="80"  r="1.5" fill="white" fill-opacity="0.2"/>
-                <circle cx="340" cy="150" r="2"   fill="#38BDF8" fill-opacity="0.28"/>
-                <circle cx="460" cy="280" r="2.5" fill="white" fill-opacity="0.18"/>
-                <circle cx="120" cy="460" r="2"   fill="white" fill-opacity="0.16"/>
-                <circle cx="390" cy="620" r="2.5" fill="#38BDF8" fill-opacity="0.25"/>
-                <circle cx="270" cy="800" r="1.5" fill="white" fill-opacity="0.18"/>
+                    M396,6
+                    C464,6 502,102 488,248
+                    C474,394 416,512 430,670
+                    C444,808 406,906 280,948
+                " fill="none" stroke="white" stroke-opacity="0.06" stroke-width="1.2" stroke-linecap="round"/>
             </svg>
         </div>
+        @endif
 
 
         {{-- Main Container --}}
@@ -249,43 +218,71 @@
                     
                     {{-- Left Column: Text Content --}}
                     <div class="w-full flex-1 min-w-0 text-left">
-                        {{-- Badge (Clean White Pill) --}}
-                        <div class="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-white/95 px-3 py-1 sm:px-4 sm:py-1.5 text-[11px] sm:text-xs font-bold text-primary-deep shadow-md mb-2 sm:mb-3.5 lg:mb-5 backdrop-blur-sm">
-                            <span class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-primary animate-pulse"></span>
-                            Digital Solutions Partner
+                        {{-- Eyebrow Pill (Refined Glassmorphism) --}}
+                        <div class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[11px] sm:text-xs font-semibold tracking-wide text-white/95 backdrop-blur-md shadow-sm mb-3 sm:mb-4 lg:mb-5">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-300 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-300"></span>
+                            </span>
+                            <span>Digital Solutions Partner</span>
                         </div>
 
                         {{-- Main Heading --}}
-                        <h1 id="hero-heading" class="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white leading-[1.18] mb-2 sm:mb-3 lg:mb-4">
-                            <span data-lang-id>Bergerak<br><span class="text-sky-300">Memberi Solusi.</span></span>
-                            <span data-lang-en class="hidden">Moving Forward,<br><span class="text-sky-300">Providing Solutions.</span></span>
+                        <h1 id="hero-heading" class="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.5rem] font-extrabold tracking-tight text-white leading-[1.12] mb-3 sm:mb-4 lg:mb-5">
+                            <span data-lang-id>
+                                Bergerak<br>
+                                <span class="bg-gradient-to-r from-sky-200 via-sky-300 to-white bg-clip-text text-transparent">Memberi Solusi.</span>
+                            </span>
+                            <span data-lang-en class="hidden">
+                                Moving Forward,<br>
+                                <span class="bg-gradient-to-r from-sky-200 via-sky-300 to-white bg-clip-text text-transparent">Providing Solutions.</span>
+                            </span>
                         </h1>
 
                         {{-- Subheading --}}
-                        <p class="text-xs sm:text-base lg:text-lg text-blue-50/90 leading-relaxed mb-3 sm:mb-5 lg:mb-7 font-normal">
+                        <p class="max-w-xl text-xs sm:text-base lg:text-[17px] text-blue-100/85 leading-relaxed mb-4 sm:mb-6 lg:mb-7 font-normal">
                             <span data-lang-id>Kami hadir sebagai mitra digital terpercaya untuk membangun software, platform LMS, website modern, serta infrastruktur IT yang efisien dan terintegrasi.</span>
                             <span data-lang-en class="hidden">We are here as a trusted digital partner to build custom software, LMS platforms, modern websites, and integrated, efficient IT infrastructure.</span>
                         </p>
 
                         {{-- Action Buttons --}}
-                        <div class="flex flex-row items-center gap-2 sm:gap-3 w-full">
+                        <div class="flex flex-row items-center gap-2.5 sm:gap-3.5 w-full">
                             <a
                                 href="/#contact"
-                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-white px-3.5 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm font-bold text-primary shadow-sm hover:bg-blue-50 hover:scale-[1.02] hover:shadow-[0_12px_24px_rgba(255,255,255,0.2)] transition-all duration-300 touch-target select-none whitespace-nowrap"
+                                class="group flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm font-bold text-primary-deep shadow-[0_10px_25px_rgba(15,23,42,0.18)] hover:bg-sky-50 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(255,255,255,0.22)] transition-all duration-300 touch-target select-none whitespace-nowrap"
                             >
                                 <span data-lang-id>Mulai Project</span>
                                 <span data-lang-en class="hidden">Start Project</span>
-                                <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                             </a>
                             <a
                                 href="/services"
-                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl border border-white/30 bg-white/10 px-3.5 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm font-semibold text-white backdrop-blur-xs hover:bg-white/25 hover:border-white/50 hover:scale-[1.02] transition-all duration-300 touch-target select-none whitespace-nowrap"
+                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-sm font-semibold text-white backdrop-blur-md hover:bg-white/20 hover:border-white/40 hover:-translate-y-0.5 transition-all duration-300 touch-target select-none whitespace-nowrap"
                             >
                                 <span data-lang-id>Jelajahi Layanan</span>
                                 <span data-lang-en class="hidden">Explore Services</span>
                             </a>
+                        </div>
+
+                        {{-- Clean Minimal Core Pillars Strip (Hidden on small mobile to preserve clean above-the-fold fit) --}}
+                        <div class="hidden sm:flex items-center flex-wrap gap-x-5 gap-y-2 mt-6 lg:mt-8 pt-4 lg:pt-5 border-t border-white/15 text-xs font-medium text-blue-100/80">
+                            <span class="inline-flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                <span data-lang-id>Software & LMS</span>
+                                <span data-lang-en class="hidden">Software & LMS</span>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                <span data-lang-id>Web Modern</span>
+                                <span data-lang-en class="hidden">Modern Web</span>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                <span data-lang-id>Infrastruktur IT</span>
+                                <span data-lang-en class="hidden">IT Infrastructure</span>
+                            </span>
                         </div>
                     </div>
 
@@ -563,15 +560,17 @@
     var heroBlob    = document.getElementById('hero-blob');
     var heroText    = document.getElementById('hero-text');
 
-    if (!heroSection || !heroBlob || !heroText) return;
+    if (!heroSection || !heroText) return;
 
     var hidden = true; // Start as hidden to trigger slideIn on load
 
     function slideIn() {
         if (hidden) {
             hidden = false;
-            heroBlob.style.transform = 'translateX(0)';
-            heroBlob.style.opacity   = '1';
+            if (heroBlob) {
+                heroBlob.style.transform = 'translateX(0)';
+                heroBlob.style.opacity   = '1';
+            }
             heroText.style.transform = 'translateX(0)';
             heroText.style.opacity   = '1';
         }
@@ -580,8 +579,10 @@
     function slideOut() {
         if (!hidden) {
             hidden = true;
-            heroBlob.style.transform = 'translateX(-160px)';
-            heroBlob.style.opacity   = '0';
+            if (heroBlob) {
+                heroBlob.style.transform = 'translateX(-160px)';
+                heroBlob.style.opacity   = '0';
+            }
             heroText.style.transform = 'translateX(-90px)';
             heroText.style.opacity   = '0';
         }
@@ -599,7 +600,9 @@
 
     // Set transitions and run initial slideIn after layout settles (avoid FOUC/instant show)
     setTimeout(function () {
-        heroBlob.style.transition = 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease';
+        if (heroBlob) {
+            heroBlob.style.transition = 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease';
+        }
         heroText.style.transition = 'transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.7s ease';
         onScroll();
     }, 100);

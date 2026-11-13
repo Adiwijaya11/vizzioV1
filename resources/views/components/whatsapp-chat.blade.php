@@ -1,73 +1,80 @@
-{{-- WhatsApp Chat Component — hidden on mobile when nav drawer is open --}}
-<div id="wa-chatbot" class="fixed bottom-6 right-6 z-40 transition-all duration-300" aria-label="WhatsApp Chat">
+{{-- VizzioCraft Clean Blue Chatbot --}}
+<div id="wa-chatbot" class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 transition-all duration-300" aria-label="VizzioCraft Chatbot">
     <button id="wa-toggle" type="button"
-        class="relative w-14 h-14 rounded-2xl bg-[#25D366] shadow-[0_8px_24px_rgba(37,211,102,.35)] flex items-center justify-center text-white hover:bg-[#22c55e] hover:scale-105 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(37,211,102,.5)] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#25D366]/60 focus:ring-offset-2"
-        aria-label="Buka Chat WhatsApp" aria-expanded="false">
-        <x-news-icon :name="'whatsapp'" class="w-7 h-7 drop-shadow" />
+        class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-primary hover:bg-primary-dark shadow-[0_8px_24px_rgba(37,99,235,0.35)] flex items-center justify-center text-white hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 cursor-pointer"
+        aria-label="Buka Chatbot" aria-expanded="false">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
         <span id="wa-badge"
-            class="hidden absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center ring-2 ring-white">1</span>
+            class="hidden absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center ring-2 ring-white">1</span>
     </button>
 
     <div id="wa-panel"
-        class="absolute bottom-[4.5rem] right-0 w-[22rem] bg-white border border-border/60 shadow-[0_20px_60px_rgba(0,0,0,0.12)] rounded-2xl opacity-0 invisible transform translate-y-3 transition-all duration-300 pointer-events-none overflow-hidden">
+        class="absolute bottom-[4.25rem] right-0 w-[calc(100vw-2.5rem)] sm:w-[22rem] bg-white border border-slate-200/90 shadow-[0_20px_55px_rgba(15,23,42,0.14)] rounded-2xl opacity-0 invisible transform translate-y-3 transition-all duration-250 pointer-events-none overflow-hidden flex flex-col">
 
-        {{-- Header --}}
-        <div class="bg-[#25D366] text-white px-5 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center border border-white/20">
-                    <x-news-icon :name="'whatsapp'" class="w-5.5 h-5.5" />
+        {{-- Clean Light Header --}}
+        <div class="bg-white border-b border-slate-100 px-4 py-3.5 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-blue-50 text-primary flex items-center justify-center border border-blue-100 shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
                 </div>
                 <div>
-                    <p class="font-semibold text-[13px] leading-tight">VizzioCraft</p>
-                    <p class="text-[11px] text-white/85 flex items-center gap-1 mt-0.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse inline-block"></span>
-                        <span data-lang-id>Online sekarang</span>
-                        <span data-lang-en class="hidden">Online now</span>
+                    <p class="font-bold text-[13px] text-slate-900 leading-tight">VizzioBot</p>
+                    <p class="text-[10.5px] text-slate-500 flex items-center gap-1.5 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span data-lang-id>Online</span>
+                        <span data-lang-en class="hidden">Online</span>
                     </p>
                 </div>
             </div>
             <button id="wa-close" type="button"
-                class="w-8 h-8 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition-colors border border-white/10"
+                class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Tutup chat">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
-        {{-- Body --}}
-        <div class="p-5 space-y-4 bg-white">
-            {{-- Chat bubble --}}
-            <div class="bg-[#f0fdf4] border border-[#dcfce7] rounded-xl px-4 py-3">
-                <p class="text-[13px] text-ink leading-relaxed">
-                    <span data-lang-id>👋 Halo! Ada yang bisa kami bantu hari ini? Konsultasi <strong>gratis</strong> untuk proyek digital Anda.</span>
-                    <span data-lang-en class="hidden">👋 Hi! How can we help you today? <strong>Free</strong> consultation for your digital project.</span>
-                </p>
+        {{-- Scrollable Messages (Hidden Scrollbar) --}}
+        <div id="vc-chat-messages" data-lenis-prevent
+            class="p-4 space-y-2.5 bg-slate-50/50 h-60 overflow-y-auto overscroll-contain text-[12.5px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div class="flex justify-start">
+                <div class="bg-white border border-slate-200/70 text-slate-700 rounded-2xl rounded-tl-sm px-3.5 py-2.5 max-w-[85%] shadow-2xs leading-relaxed">
+                    <span data-lang-id>Halo! Ada yang bisa kami bantu hari ini?</span>
+                    <span data-lang-en class="hidden">Hi! How can we help you today?</span>
+                </div>
             </div>
-
-            {{-- CTA --}}
-            <a id="wa-link"
-                href="https://wa.me/6283114592416?text=Halo%20VizzioCraft%2C%20saya%20ingin%20berkonsultasi%20mengenai%20proyek%20digital%20saya"
-                target="_blank" rel="noopener noreferrer"
-                class="flex items-center justify-center gap-2.5 w-full bg-[#25D366] hover:bg-[#22c55e] text-white font-semibold py-3 rounded-xl text-[13px] transition-all duration-200 shadow-[0_4px_16px_rgba(37,211,102,.3)] hover:shadow-[0_6px_20px_rgba(37,211,102,.45)] hover:-translate-y-0.5">
-                <x-news-icon :name="'whatsapp'" class="w-5 h-5" />
-                <span>
-                    <span data-lang-id>Chat di WhatsApp</span>
-                    <span data-lang-en class="hidden">Chat on WhatsApp</span>
-                </span>
-                <svg class="w-4 h-4 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-            </a>
-
-            <p class="text-center text-[11px] text-ink-muted flex items-center justify-center gap-1.5">
-                <svg class="w-3 h-3 text-[#25D366]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
-                <span data-lang-id>Biasanya balas dalam beberapa menit</span>
-                <span data-lang-en class="hidden">Usually replies within minutes</span>
-            </p>
         </div>
+
+        {{-- Rekomendasi Chat --}}
+        <div class="px-3.5 py-2 bg-white border-t border-slate-100 flex flex-wrap gap-1.5 shrink-0">
+            <button type="button" data-bot-prompt="Layanan & Solusi" class="vc-quick-btn px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-primary border border-slate-200/80 hover:border-blue-200 text-[11px] font-medium cursor-pointer transition">
+                Layanan &amp; Solusi
+            </button>
+            <button type="button" data-bot-prompt="Estimasi Biaya" class="vc-quick-btn px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-primary border border-slate-200/80 hover:border-blue-200 text-[11px] font-medium cursor-pointer transition">
+                Estimasi Biaya
+            </button>
+            <button type="button" data-bot-prompt="Konsultasi Tim" class="vc-quick-btn px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-primary border border-slate-200/80 hover:border-blue-200 text-[11px] font-medium cursor-pointer transition">
+                Konsultasi Tim
+            </button>
+        </div>
+
+        {{-- Input --}}
+        <form id="vc-chat-form" class="p-3 border-t border-slate-100 bg-white flex items-center gap-2 shrink-0">
+            <input id="vc-chat-input" type="text" autocomplete="off"
+                placeholder="Tulis pesan..."
+                class="flex-1 px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/70 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition" />
+            <button type="submit" aria-label="Kirim pesan"
+                class="w-9 h-9 rounded-xl bg-primary hover:bg-primary-dark text-white flex items-center justify-center shrink-0 cursor-pointer transition">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </button>
+        </form>
     </div>
 </div>
 
@@ -78,6 +85,10 @@
     var panel = document.getElementById('wa-panel');
     var closeBtn = document.getElementById('wa-close');
     var badge = document.getElementById('wa-badge');
+    var messagesEl = document.getElementById('vc-chat-messages');
+    var form = document.getElementById('vc-chat-form');
+    var input = document.getElementById('vc-chat-input');
+    var quickBtns = document.querySelectorAll('.vc-quick-btn');
     var open = false;
 
     function setOpen(v) {
@@ -86,12 +97,71 @@
         if (v) {
             panel.classList.remove('opacity-0', 'invisible', 'translate-y-3', 'pointer-events-none');
             badge.classList.add('hidden');
+            if (input) setTimeout(function () { input.focus(); }, 150);
         } else {
             panel.classList.add('opacity-0', 'invisible', 'translate-y-3', 'pointer-events-none');
         }
     }
 
-    // Hide WA button when mobile nav is open, show when closed
+    function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, function (m) {
+            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+        });
+    }
+
+    function appendMessage(text, isUser) {
+        if (!messagesEl) return;
+        var wrap = document.createElement('div');
+        wrap.className = isUser ? 'flex justify-end' : 'flex justify-start';
+        wrap.innerHTML = isUser
+            ? '<div class="bg-primary text-white rounded-2xl rounded-tr-sm px-3.5 py-2 max-w-[85%] leading-relaxed break-words">' + escapeHtml(text) + '</div>'
+            : '<div class="bg-white border border-slate-200/70 text-slate-700 rounded-2xl rounded-tl-sm px-3.5 py-2.5 max-w-[85%] shadow-2xs leading-relaxed break-words">' + text + '</div>';
+        messagesEl.appendChild(wrap);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function getBotReply(query) {
+        var q = query.toLowerCase();
+        if (q.indexOf('layanan') !== -1 || q.indexOf('jasa') !== -1 || q.indexOf('service') !== -1 || q.indexOf('solusi') !== -1) {
+            return 'Kami menyediakan jasa Website, Software Custom, LMS, dan Infrastruktur IT. Info lengkap ada di <a href="/services" class="text-primary font-semibold underline">halaman Layanan</a>.';
+        }
+        if (q.indexOf('harga') !== -1 || q.indexOf('biaya') !== -1 || q.indexOf('budget') !== -1 || q.indexOf('estimasi') !== -1) {
+            return 'Biaya menyesuaikan kebutuhan proyek. Silakan kirim detail Anda di <a href="/contact" class="text-primary font-semibold underline">halaman Kontak</a> untuk penawaran gratis.';
+        }
+        if (q.indexOf('portofolio') !== -1 || q.indexOf('proyek') !== -1 || q.indexOf('project') !== -1) {
+            return 'Lihat hasil karya kami di <a href="/projects" class="text-primary font-semibold underline">halaman Portofolio</a>.';
+        }
+        if (q.indexOf('konsultasi') !== -1 || q.indexOf('hubungi') !== -1 || q.indexOf('kontak') !== -1 || q.indexOf('tim') !== -1) {
+            return 'Anda dapat menghubungi tim kami melalui <a href="/contact" class="text-primary font-semibold underline">halaman Kontak</a> atau email <strong>vizziocraft@gmail.com</strong>.';
+        }
+        return 'Terima kasih atas pesan Anda! Silakan kunjungi <a href="/contact" class="text-primary font-semibold underline">halaman Kontak</a> untuk terhubung langsung dengan tim kami.';
+    }
+
+    function sendUserQuery(text) {
+        var clean = (text || '').trim();
+        if (!clean) return;
+        appendMessage(clean, true);
+        setTimeout(function () {
+            appendMessage(getBotReply(clean), false);
+        }, 300);
+    }
+
+    if (form && input) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var val = input.value;
+            if (!val.trim()) return;
+            input.value = '';
+            sendUserQuery(val);
+        });
+    }
+
+    quickBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            sendUserQuery(this.getAttribute('data-bot-prompt'));
+        });
+    });
+
     function syncWithNav() {
         var mobileNav = document.getElementById('mobile-nav');
         if (!mobileNav) return;
@@ -104,7 +174,6 @@
         }
     }
 
-    // Observe mobile nav class changes
     var mobileNav = document.getElementById('mobile-nav');
     if (mobileNav && window.MutationObserver) {
         var observer = new MutationObserver(syncWithNav);
@@ -121,7 +190,6 @@
         if (e.key === 'Escape' && open) setOpen(false);
     });
 
-    // Show badge after 4s if panel not opened
     setTimeout(function () {
         if (!open) badge.classList.remove('hidden');
     }, 4000);

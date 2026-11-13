@@ -240,54 +240,54 @@
                     </div>
 
                     {{-- Cards --}}
-                    <div id="news-grid" class="space-y-4">
+                    <div id="news-grid" class="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-4">
                         @foreach ($newsArticles as $index => $article)
                         @php $gr = $catColors[$article['category']] ?? 'from-primary to-blue-700'; @endphp
                         <article data-news-card data-category="{{ $article['category'] }}"
                             data-title="{{ strtolower($article['title']['id'].' '.$article['title']['en']) }}"
                             data-desc="{{ strtolower($article['desc']['id'].' '.$article['desc']['en']) }}"
-                            class="news-card group relative flex flex-col sm:flex-row rounded-3xl bg-white border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 hover:border-primary/20 transition-all duration-300"
+                            class="news-card group relative flex flex-col sm:flex-row rounded-2xl sm:rounded-3xl bg-white border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 hover:border-primary/20 transition-all duration-300"
                             style="animation-delay:{{ $index*60 }}ms">
 
                             {{-- Image --}}
-                            <div class="relative w-full sm:w-56 md:w-64 shrink-0 overflow-hidden bg-slate-100" style="min-height:190px">
+                            <div class="relative w-full h-28 sm:h-auto sm:min-h-[190px] sm:w-56 md:w-64 shrink-0 overflow-hidden bg-slate-100">
                                 <img src="{{ $article['image'] }}" alt="{{ $article['title']['id'] }}" loading="lazy"
                                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"/>
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
-                                <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r {{ $gr }} px-2.5 py-1 text-[10px] font-bold text-white shadow-lg">
-                                    <x-news-icon :name="$article['icon']" class="w-3 h-3"/>
+                                <span class="absolute top-2 left-2 sm:top-3 sm:left-3 inline-flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl bg-gradient-to-r {{ $gr }} px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-bold text-white shadow-lg">
+                                    <x-news-icon :name="$article['icon']" class="w-2.5 h-2.5 sm:w-3 sm:h-3"/>
                                     <span data-lang-id>{{ $article['category_label']['id'] }}</span><span data-lang-en class="hidden">{{ $article['category_label']['en'] }}</span>
                                 </span>
-                                <span class="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-lg bg-black/50 backdrop-blur-sm px-2 py-1 text-[10px] font-medium text-white">
+                                <span class="hidden sm:inline-flex absolute bottom-3 right-3 items-center gap-1 rounded-lg bg-black/50 backdrop-blur-sm px-2 py-1 text-[10px] font-medium text-white">
                                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     {{ $article['read'] }}
                                 </span>
                             </div>
 
                             {{-- Content --}}
-                            <div class="flex flex-col flex-1 min-w-0 p-5 sm:p-6 justify-between">
+                            <div class="flex flex-col flex-1 min-w-0 p-3 sm:p-6 justify-between">
                                 <div>
-                                    <div class="flex items-center gap-2 mb-3 text-[11px] text-slate-400 font-medium">
-                                        <svg class="w-3.5 h-3.5 text-primary/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                        <span data-lang-id>{{ $article['date']['id'] }}</span><span data-lang-en class="hidden">{{ $article['date']['en'] }}</span>
+                                    <div class="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-3 text-[10px] sm:text-[11px] text-slate-400 font-medium">
+                                        <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary/60 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <span class="truncate" data-lang-id>{{ $article['date']['id'] }}</span><span class="truncate hidden" data-lang-en>{{ $article['date']['en'] }}</span>
                                     </div>
-                                    <h3 class="text-base sm:text-[17px] font-bold text-slate-800 mb-2.5 leading-snug group-hover:text-primary transition-colors duration-200">
+                                    <h3 class="text-xs sm:text-[17px] font-bold text-slate-800 mb-2 sm:mb-2.5 leading-snug line-clamp-2 sm:line-clamp-none group-hover:text-primary transition-colors duration-200">
                                         <a href="/news/{{ $article['slug'] }}" class="hover:underline">
                                             <span data-lang-id>{{ $article['title']['id'] }}</span><span data-lang-en class="hidden">{{ $article['title']['en'] }}</span>
                                         </a>
                                     </h3>
-                                    <p class="text-xs sm:text-sm text-slate-500 leading-relaxed line-clamp-2 sm:line-clamp-3 mb-4">
+                                    <p class="hidden sm:line-clamp-3 text-xs sm:text-sm text-slate-500 leading-relaxed mb-4">
                                         <span data-lang-id>{{ $article['desc']['id'] }}</span><span data-lang-en class="hidden">{{ $article['desc']['en'] }}</span>
                                     </p>
                                 </div>
-                                <div class="flex items-center justify-between pt-3.5 border-t border-slate-100">
-                                    <div class="flex items-center gap-2">
+                                <div class="flex items-center justify-between pt-2 sm:pt-3.5 border-t border-slate-100">
+                                    <div class="hidden sm:flex items-center gap-2">
                                         <div class="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-sky-500 text-white font-black text-[10px] flex items-center justify-center shadow-sm">VC</div>
                                         <span class="text-xs font-semibold text-slate-500">Tim VizzioCraft</span>
                                     </div>
-                                    <a href="/news/{{ $article['slug'] }}" class="inline-flex items-center gap-1.5 rounded-xl bg-primary/8 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all duration-200 group/btn">
+                                    <a href="/news/{{ $article['slug'] }}" class="inline-flex w-full sm:w-auto justify-center items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl bg-primary/8 px-2.5 py-1.5 text-[10px] sm:text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all duration-200 group/btn">
                                         <span data-lang-id>Baca Selengkapnya</span><span data-lang-en class="hidden">Read More</span>
-                                        <svg class="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                        <svg class="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                     </a>
                                 </div>
                             </div>

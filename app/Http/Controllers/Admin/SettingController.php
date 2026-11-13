@@ -59,6 +59,7 @@ class SettingController extends Controller
                     'blob_active'     => true,
                     'search_bar'      => true,
                     'gradient_style'  => 'blue-cyan',
+                    'bg_image'        => null,
                 ],
                 'pages' => [
                     [
@@ -349,9 +350,41 @@ class SettingController extends Controller
             'cta_second'      => 'required|string|max:100',
             'cta_second_url'  => 'required|string|max:255',
             'gradient_style'  => 'required|string',
+            'bg_image_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'bg_image_url'    => 'nullable|string|max:500',
         ]);
 
         $settings = $this->getSettings();
+        $existingBg = $settings['banner']['bg_image'] ?? null;
+        $bgImage = $existingBg;
+
+        $deleteOldLocalBg = function ($path) {
+            if ($path && str_starts_with($path, '/storage/hero/')) {
+                $relative = str_replace('/storage/', '', $path);
+                Storage::disk('public')->delete($relative);
+            }
+        };
+
+        if ($request->boolean('remove_bg_image')) {
+            $deleteOldLocalBg($existingBg);
+            $bgImage = null;
+        } elseif ($request->hasFile('bg_image_file')) {
+            $deleteOldLocalBg($existingBg);
+            $storedPath = $request->file('bg_image_file')->store('hero', 'public');
+            $bgImage = '/storage/' . $storedPath;
+        } elseif ($request->has('bg_image_url')) {
+            $urlInput = trim((string) ($validated['bg_image_url'] ?? ''));
+            if ($urlInput === '') {
+                $deleteOldLocalBg($existingBg);
+                $bgImage = null;
+            } else {
+                if ($urlInput !== $existingBg) {
+                    $deleteOldLocalBg($existingBg);
+                }
+                $bgImage = $urlInput;
+            }
+        }
+
         $settings['banner'] = [
             'badge'           => $validated['badge'],
             'title_id'        => $validated['title_id'],
@@ -363,6 +396,7 @@ class SettingController extends Controller
             'blob_active'     => $request->boolean('blob_active'),
             'search_bar'      => $request->boolean('search_bar'),
             'gradient_style'  => $validated['gradient_style'],
+            'bg_image'        => $bgImage,
         ];
         $this->saveSettings($settings);
 

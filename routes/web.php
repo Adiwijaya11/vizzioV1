@@ -27,12 +27,20 @@ use App\Http\Controllers\Admin\PartnerController as AdminPartnerController;
 use App\Http\Controllers\Admin\TipController as AdminTipController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Middleware\EnsureAdminAuthenticated;
+use App\Http\Middleware\EnsureSuperAdmin;
 use App\Models\Technology;
 use App\Models\Partner;
 use App\Models\Tip;
 
 Route::get('/', function () {
-    return view('welcome');
+    $heroBanner = [];
+    if (\Illuminate\Support\Facades\Storage::exists('settings.json')) {
+        $settings = json_decode(\Illuminate\Support\Facades\Storage::get('settings.json'), true);
+        $heroBanner = $settings['banner'] ?? [];
+    }
+    return view('welcome', compact('heroBanner'));
 });
 
 $getNewsCategoryData = function ($categoryKey = 'all') {
@@ -330,65 +338,17 @@ Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.sho
 */
 
 // GET Login Form
-Route::get('/login', function () {
-    if (session('admin_logged_in')) {
-        return redirect('/admin/dashboard');
-    }
-    return view('auth.login');
-})->name('login');
+Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
 
-// POST Login Submit (Database MySQL & Role Verification)
-Route::post('/login', function (Request $request) {
-    $email = trim($request->input('email'));
-    $password = $request->input('password');
-
-    // 1. Try Eloquent MySQL Database Authentication
-    try {
-        $user = User::where('email', $email)->first();
-        if ($user && Hash::check($password, $user->password)) {
-            session([
-                'admin_logged_in' => true,
-                'user_id'         => $user->id,
-                'user_name'       => $user->name,
-                'user_email'      => $user->email,
-                'user_role'       => $user->role, // 'super_admin' or 'admin'
-            ]);
-            return redirect('/admin/dashboard');
-        }
-    } catch (\Exception $e) {
-        // Fallback to demo credentials if DB error occurs
-    }
-
-    // 2. Demo Account Fallbacks
-    if ($email === 'superadmin@vizziocraft.com' && $password === 'superadmin123') {
-        session([
-            'admin_logged_in' => true,
-            'user_name'       => 'Super Admin VizzioCraft',
-            'user_email'      => 'superadmin@vizziocraft.com',
-            'user_role'       => 'super_admin',
-        ]);
-        return redirect('/admin/dashboard');
-    }
-
-    if ($email === 'admin@vizziocraft.com' && $password === 'admin123') {
-        session([
-            'admin_logged_in' => true,
-            'user_name'       => 'Admin VizzioCraft',
-            'user_email'      => 'admin@vizziocraft.com',
-            'user_role'       => 'admin',
-        ]);
-        return redirect('/admin/dashboard');
-    }
-
-    return back()->with('error', 'Alamat email atau kata sandi admin tidak ditemukan.');
-});
+// POST Login Submit (.env credentials & Database MySQL + Rate Limiting + Session Regeneration)
+Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
 
 /*
 |--------------------------------------------------------------------------
 | Admin Portal Dedicated Routes (Role-Based Protected Panel)
 |--------------------------------------------------------------------------
 */
-Route::middleware([])->group(function () {
+Route::middleware([EnsureAdminAuthenticated::class])->group(function () {
     // 1. Utama & Analitik
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/analytics', [AnalyticsController::class, 'visitors'])->name('admin.analytics.visitors');
@@ -421,14 +381,18 @@ Route::middleware([])->group(function () {
     Route::get('/admin/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
 
     // 4. ★ Khusus Super Admin - All Users & Keamanan
-    Route::get('/admin/users/reset-password', [UserController::class, 'resetPasswordView'])->name('admin.users.reset-password');
-    Route::post('/admin/users/reset-password', [UserController::class, 'resetPassword'])->name('admin.users.reset-password.post');
-    Route::resource('admin/users', UserController::class)->names('admin.users');
+    Route::middleware([EnsureSuperAdmin::class])->group(function () {
+        Route::get('/admin/users/reset-password', [UserController::class, 'resetPasswordView'])->name('admin.users.reset-password');
+        Route::post('/admin/users/reset-password', [UserController::class, 'resetPassword'])->name('admin.users.reset-password.post');
+        Route::resource('admin/users', UserController::class)->names('admin.users');
 
-    Route::get('/admin/logs', [LogController::class, 'index'])->name('admin.logs.index');
-    Route::get('/admin/security', [SecurityController::class, 'index'])->name('admin.security.index');
-    Route::get('/admin/backup', [BackupController::class, 'index'])->name('admin.backup.index');
-    Route::post('/admin/backup', [BackupController::class, 'createBackup'])->name('admin.backup.create');
+        Route::get('/admin/logs', [LogController::class, 'index'])->name('admin.logs.index');
+        Route::get('/admin/security', [SecurityController::class, 'index'])->name('admin.security.index');
+        Route::get('/admin/backup', [BackupController::class, 'index'])->name('admin.backup.index');
+        Route::post('/admin/backup', [BackupController::class, 'createBackup'])->name('admin.backup.create');
+        Route::get('/admin/settings/email', [SettingController::class, 'email'])->name('admin.settings.email');
+        Route::get('/admin/settings/system', [SettingController::class, 'system'])->name('admin.settings.system');
+    });
 
     // 5. Pengaturan & Halaman
     Route::get('/admin/settings/profile', [SettingController::class, 'profile'])->name('admin.settings.profile');
@@ -439,19 +403,10 @@ Route::middleware([])->group(function () {
     Route::post('/admin/settings/seo', [SettingController::class, 'updateSeo'])->name('admin.settings.seo.update');
     Route::get('/admin/settings/banner', [SettingController::class, 'banner'])->name('admin.settings.banner');
     Route::post('/admin/settings/banner', [SettingController::class, 'updateBanner'])->name('admin.settings.banner.update');
-    Route::get('/admin/settings/email', [SettingController::class, 'email'])->name('admin.settings.email');
-    Route::get('/admin/settings/system', [SettingController::class, 'system'])->name('admin.settings.system');
 });
 
 
 // Logout
-Route::match(['GET', 'POST'], '/logout', function () {
-    session()->flush();
-    return redirect('/login');
-})->name('logout');
-
-Route::match(['GET', 'POST'], '/admin/logout', function () {
-    session()->flush();
-    return redirect('/login');
-})->name('admin.logout');
+Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
